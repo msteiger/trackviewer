@@ -3,7 +3,9 @@ package gpx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -31,7 +33,7 @@ public class GpxReader
 	 * @return the track data
 	 * @throws IOException if the data cannot be read
 	 */
-	public static Track read(InputStream is) throws IOException
+	public static List<Track> read(InputStream is) throws IOException
 	{
 		GpxType gpx;
 		try
@@ -43,12 +45,14 @@ public class GpxReader
 			throw new IOException("Error parsing inputstream", e);
 		}
 
-		Track track = new Track();
+		ArrayList<Track> list = new ArrayList<Track>();
 		
 		for (TrkType trk : gpx.getTrk())
 		{
 			for (TrksegType seg : trk.getTrkseg())
 			{
+				Track track = new Track();
+
 				for (WptType pt : seg.getTrkpt())
 				{
 					double lat = pt.getLat().doubleValue();
@@ -58,10 +62,12 @@ public class GpxReader
 					GeoPosition pos = new GeoPosition(lat, lon);
 					track.addPoint(new TrackPoint(pos, ele, time));
 				}
+
+				list.add(track);
 			}
 		}
 
-		return track;
+		return list;
 	}
 	
 	private static GpxType unmarshallObject(InputStream is) throws JAXBException

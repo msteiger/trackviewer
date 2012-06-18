@@ -4,6 +4,7 @@ package gpx;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,15 +29,11 @@ public class GpxWriter
 {
 	/**
 	 * @param os the output stream
-	 * @param track the track
+	 * @param tracks the list of tracks
 	 * @throws IOException if the data cannot be read
 	 */
-	public static void write(OutputStream os, Track track) throws IOException
+	public static void write(OutputStream os, List<Track> tracks) throws IOException
 	{
-		GpxType gpx = new GpxType();
-
-		TrksegType seg = new TrksegType();
-
 		DatatypeFactory factory;
 		try
 		{
@@ -47,21 +44,31 @@ public class GpxWriter
 			throw new IllegalStateException(e);
 		}
 
-		for (TrackPoint pt : track.getPoints())
-		{
-			WptType wpt = new WptType();
-			
-			wpt.setLat(BigDecimal.valueOf(pt.getPos().getLatitude()));
-			wpt.setLon(BigDecimal.valueOf(pt.getPos().getLongitude()));
-			wpt.setEle(BigDecimal.valueOf(pt.getElevation()));
 
-			wpt.setTime(factory.newXMLGregorianCalendar(pt.getTime()));
-			
-			seg.getTrkpt().add(wpt);
-		}
+		GpxType gpx = new GpxType();
+
 		
-		TrkType trk = new TrkType();
-		gpx.getTrk().add(trk);
+		for (Track track : tracks)
+		{
+			TrkType trk = new TrkType();
+			TrksegType seg = new TrksegType();
+
+			for (TrackPoint pt : track.getPoints())
+			{
+				WptType wpt = new WptType();
+				
+				wpt.setLat(BigDecimal.valueOf(pt.getPos().getLatitude()));
+				wpt.setLon(BigDecimal.valueOf(pt.getPos().getLongitude()));
+				wpt.setEle(BigDecimal.valueOf(pt.getElevation()));
+	
+				wpt.setTime(factory.newXMLGregorianCalendar(pt.getTime()));
+				
+				seg.getTrkpt().add(wpt);
+			}
+			
+			trk.getTrkseg().add(seg);
+			gpx.getTrk().add(trk);
+		}
 		
 		try
 		{
