@@ -58,9 +58,12 @@ public class GpxReader
 					double lat = pt.getLat().doubleValue();
 					double lon = pt.getLon().doubleValue();
 					double ele = pt.getEle().doubleValue();
-					GregorianCalendar time = pt.getTime().toGregorianCalendar();
+					GregorianCalendar cal = pt.getTime().toGregorianCalendar();
 					GeoPosition pos = new GeoPosition(lat, lon);
-					track.addPoint(new TrackPoint(pos, ele, time));
+
+					TrackPoint tp = new TrackPoint(pos, cal.getTime());
+					tp.setElevation(ele);
+					track.addPoint(tp);
 				}
 
 				list.add(track);

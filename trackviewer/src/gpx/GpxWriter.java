@@ -4,6 +4,7 @@ package gpx;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -61,7 +62,9 @@ public class GpxWriter
 				wpt.setLon(BigDecimal.valueOf(pt.getPos().getLongitude()));
 				wpt.setEle(BigDecimal.valueOf(pt.getElevation()));
 	
-				wpt.setTime(factory.newXMLGregorianCalendar(pt.getTime()));
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTime(pt.getTime());
+				wpt.setTime(factory.newXMLGregorianCalendar(cal));
 				
 				seg.getTrkpt().add(wpt);
 			}

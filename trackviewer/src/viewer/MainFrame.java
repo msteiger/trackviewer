@@ -104,6 +104,11 @@ public class MainFrame extends JFrame
 			}
 		}
 		
+		for (Track track : tracks)
+		{
+			TrackComputer.repairTrackData(track);
+		}
+		
 		return tracks;
 	}
 

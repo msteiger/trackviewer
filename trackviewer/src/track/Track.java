@@ -14,7 +14,8 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
  */
 public class Track
 {
-	private List<TrackPoint> points = new ArrayList<TrackPoint>();
+	private final List<TrackPoint> points = new ArrayList<TrackPoint>();
+	private final List<Waypoint> waypoints = new ArrayList<Waypoint>();
 			
 	private List<GeoPosition> route = new AbstractList<GeoPosition>()
 	{
@@ -31,6 +32,23 @@ public class Track
 		}
 
 	};
+
+	private String name;
+
+	/**
+	 * Default constructor (no name set)
+	 */
+	public Track()
+	{
+	}
+
+	/**
+	 * @param name the name of the track
+	 */
+	public Track(String name)
+	{
+		this.name = name;
+	}
 
 	/**
 	 * @return an unmodifiable list of geo-positions
@@ -56,4 +74,37 @@ public class Track
 		points.add(point);
 	}
 	
+	/**
+	 * @param point the waypoint
+	 */
+	public void addWaypoint(Waypoint point)
+	{
+		waypoints.add(point);
+	}
+	/**
+	 * @return an unmodifiable list of waypoints
+	 */
+	public List<Waypoint> getWaypoints()
+	{
+		return Collections.unmodifiableList(waypoints);
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @return the total distance of the track
+	 */
+	public double getTotalDistance()
+	{
+		if (points.isEmpty())
+			return 0;
+		
+		return points.get(points.size() - 1).getDistance();
+	}
 }

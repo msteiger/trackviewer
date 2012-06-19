@@ -1,7 +1,7 @@
 
 package track;
 
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
@@ -12,18 +12,19 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 public class TrackPoint
 {
 	private final GeoPosition pos;
-	private final double ele;
-	private final GregorianCalendar time;
+	private final Date time;
+
+	private double elevation;
+	private double distance;
+	private double speed;
 
 	/**
 	 * @param pos the position
-	 * @param ele the elevation
 	 * @param time the time
 	 */
-	public TrackPoint(GeoPosition pos, double ele, GregorianCalendar time)
+	public TrackPoint(GeoPosition pos, Date time)
 	{
 		this.time = time;
-		this.ele = ele;
 		this.pos = pos;
 	}
 
@@ -40,15 +41,55 @@ public class TrackPoint
 	 */
 	public double getElevation()
 	{
-		return ele;
+		return elevation;
 	}
 
 	/**
 	 * @return the time
 	 */
-	public GregorianCalendar getTime()
+	public Date getTime()
 	{
 		return time;
+	}
+
+	/**
+	 * @return the speed
+	 */
+	public double getSpeed()
+	{
+		return speed;
+	}
+
+	/**
+	 * @param speed the speed to set
+	 */
+	public void setSpeed(double speed)
+	{
+		this.speed = speed;
+	}
+
+	/**
+	 * @param elevation the elevation to set
+	 */
+	public void setElevation(double elevation)
+	{
+		this.elevation = elevation;
+	}
+
+	/**
+	 * @return the distance
+	 */
+	public double getDistance()
+	{
+		return distance;
+	}
+
+	/**
+	 * @param distance the distance to set
+	 */
+	public void setDistance(double distance)
+	{
+		this.distance = distance;
 	}
 
 }

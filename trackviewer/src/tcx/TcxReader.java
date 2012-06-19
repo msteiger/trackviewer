@@ -55,8 +55,8 @@ public class TcxReader
 			{
 				for (TrackT trk : lap.getTrack())
 				{
-					Track track = new Track();
-
+					Track track = new Track("Hello World");
+					
 					for (TrackpointT pt : trk.getTrackpoint())
 					{
 						PositionT pos = pt.getPosition();
@@ -68,7 +68,9 @@ public class TcxReader
 							double ele = pt.getAltitudeMeters();
 							GregorianCalendar time = pt.getTime().toGregorianCalendar();
 							GeoPosition gp = new GeoPosition(lat, lon);
-							track.addPoint(new TrackPoint(gp, ele, time));
+							TrackPoint tp = new TrackPoint(gp, time.getTime());
+							tp.setElevation(ele);
+							track.addPoint(tp);
 						}
 					}
 

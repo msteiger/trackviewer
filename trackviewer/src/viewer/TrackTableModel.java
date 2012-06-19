@@ -15,7 +15,7 @@ final class TrackTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
-	private String[] columnNames = { "Name" };
+	private String[] columnNames = { "Name", "Distance"};
 
 	/**
 	 * @param tracks the list of tracks
@@ -46,7 +46,18 @@ final class TrackTableModel extends AbstractTableModel
 	@Override
 	public Object getValueAt(int row, int col)
 	{
-		return tracks.get(row);
+		Track track = tracks.get(row);
+
+		switch (col)
+		{
+		case 0:
+			return track.getName();
+			
+		case 1:
+			return track.getTotalDistance();
+		}
+		
+		return track;
 	}
 
 	@Override
