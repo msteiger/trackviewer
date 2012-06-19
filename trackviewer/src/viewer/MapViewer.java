@@ -17,11 +17,11 @@ import org.jdesktop.swingx.mapviewer.LocalResponseCache;
 import org.jdesktop.swingx.mapviewer.TileFactoryInfo;
 import org.jdesktop.swingx.painter.CompoundPainter;
 
-import sample2_waypoints.RoutePainter;
 import track.Track;
 
 /**
- * TODO Type description
+ * A wrapper for the actual {@link JXMapViewer} component.
+ * It connects to the typical application classes.
  * @author Martin Steiger
  */
 public class MapViewer extends JComponent
