@@ -1,6 +1,7 @@
 
 package viewer;
 
+import java.awt.BorderLayout;
 import java.io.File;
 
 import javax.swing.JComponent;
@@ -61,8 +62,8 @@ public class MapViewer extends JComponent
 		mapViewer.setZoom(10);
 		mapViewer.setAddressLocation(frankfurt);
 		
-		this.setLayout(new FillLayout());
-		add(mapViewer);
+		setLayout(new BorderLayout());
+		add(mapViewer, BorderLayout.CENTER);
 	}
 	
 	/**
