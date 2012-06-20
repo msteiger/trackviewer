@@ -24,8 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableModel;
+import javax.xml.bind.JAXBException;
 
-import tcx.TcxReader;
+import tcx.TcxAdapter;
 import track.Track;
 
 /**
@@ -76,6 +77,19 @@ public class MainFrame extends JFrame
 			}
 		});
 
+		TcxAdapter tcxAdapter = null;
+		
+		try
+		{
+			tcxAdapter = new TcxAdapter();
+		}
+		catch (JAXBException e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+//			log.error("Error initializing TcxAdapter", e);
+			return tracks;
+		}
+
 		for (String fname : files)
 		{
 			FileInputStream fis = null;
@@ -83,7 +97,7 @@ public class MainFrame extends JFrame
 			try
 			{
 				fis = new FileInputStream(new File(folder, fname));
-				tracks.addAll(TcxReader.read(fis));
+				tracks.addAll(tcxAdapter.read(fis));
 				System.out.println("Loaded " + fname);
 			}
 			catch (IOException e)

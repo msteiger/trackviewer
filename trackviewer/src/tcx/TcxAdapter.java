@@ -28,14 +28,33 @@ import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
  * Reads track data from .gpx files
  * @author Martin Steiger
  */
-public class TcxReader
+public class TcxAdapter
 {
+	private final JAXBContext context;
+
+	/**
+	 * @throws JAXBException occurs if .. 
+	 * <ol>
+     *   <li>failure to locate either ObjectFactory.class or jaxb.index in the packages</li>
+     *   <li>an ambiguity among global elements contained in the contextPath</li>
+     *   <li>failure to locate a value for the context factory provider property</li>
+     *   <li>mixing schema derived packages from different providers on the same contextPath</li>
+     * </ol>
+
+	 */
+	public TcxAdapter() throws JAXBException
+	{
+		Class<?> clazz = TrainingCenterDatabaseT.class;
+		String packageName = clazz.getPackage().getName();
+		context = JAXBContext.newInstance(packageName);
+	}
+
 	/**
 	 * @param is the input stream
 	 * @return the track data
 	 * @throws IOException if the data cannot be read
 	 */
-	public static List<Track> read(InputStream is) throws IOException
+	public List<Track> read(InputStream is) throws IOException
 	{
 		TrainingCenterDatabaseT tcx;
 		try
@@ -82,15 +101,13 @@ public class TcxReader
 		return list;
 	}
 
-	private static TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException
+	private TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException
 	{
-		String packageName = TrainingCenterDatabaseT.class.getPackage().getName();
-		JAXBContext context = JAXBContext.newInstance(packageName);
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 
 		JAXBElement<TrainingCenterDatabaseT> jaxbObject;
 		jaxbObject = (JAXBElement<TrainingCenterDatabaseT>) unmarshaller.unmarshal(is);
-		return jaxbObject.getValue();
 
+		return jaxbObject.getValue();
 	}
 }
