@@ -16,6 +16,7 @@ final class TrackTableModel extends AbstractTableModel
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
 	private String[] columnNames = { "Name", "Distance"};
+	private Class<?>[] columnClass = { String.class, Double.class };
 
 	/**
 	 * @param tracks the list of tracks
@@ -29,6 +30,12 @@ final class TrackTableModel extends AbstractTableModel
 	public String getColumnName(int col)
 	{
 		return columnNames[col];
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int col)
+	{
+		return columnClass[col];
 	}
 
 	@Override
@@ -63,7 +70,7 @@ final class TrackTableModel extends AbstractTableModel
 	@Override
 	public boolean isCellEditable(int row, int col)
 	{
-		return false;
+		return true;
 	}
 
 	@Override

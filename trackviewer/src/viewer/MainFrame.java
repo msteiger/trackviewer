@@ -2,6 +2,7 @@
 package viewer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -37,8 +38,6 @@ public class MainFrame extends JFrame
 {
 	private static final long serialVersionUID = -9215006987029836062L;
 
-	private MapViewer mapViewer = new MapViewer();
-
 	/**
 	 * Constructs a new instance
 	 */
@@ -50,18 +49,26 @@ public class MainFrame extends JFrame
 
 		List<Track> tracks = readTracks(folder);
 
-		TableModel model = new TrackTableModel(tracks);
-		
-		JTable table = new JTable(model);
+		MapViewer viewer = new MapViewer();
+		viewer.setRoute(tracks.get(0));
 
+		add(createMenu(), BorderLayout.NORTH);
+		add(viewer);
+		add(createTable(tracks), BorderLayout.WEST);
+	}
+
+	private Component createTable(List<Track> tracks)
+	{
+		TableModel model = new TrackTableModel(tracks);
+
+		JTable table = new JShadedTable(model);
+		FormatRenderer distanceRenderer = new FormatRenderer(new DistanceFormat());
+		table.getColumn("Distance").setCellRenderer(distanceRenderer);
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		
-		mapViewer.setRoute(tracks.get(0));
 
-		add(addMenu(), BorderLayout.NORTH);
-		add(mapViewer);
-		add(scrollPane, BorderLayout.WEST);
+		return scrollPane;
 	}
 
 	private List<Track> readTracks(File folder)
@@ -126,7 +133,7 @@ public class MainFrame extends JFrame
 		return tracks;
 	}
 
-	private JMenuBar addMenu()
+	private JMenuBar createMenu()
 	{
 		//Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
