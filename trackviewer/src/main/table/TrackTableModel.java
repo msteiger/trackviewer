@@ -1,5 +1,5 @@
 
-package viewer;
+package main.table;
 
 import java.util.List;
 
@@ -8,10 +8,10 @@ import javax.swing.table.AbstractTableModel;
 import track.Track;
 
 /**
- * TODO Type description
+ * A table model for {@link Track}s
  * @author Martin Steiger
  */
-final class TrackTableModel extends AbstractTableModel
+public final class TrackTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
@@ -70,7 +70,7 @@ final class TrackTableModel extends AbstractTableModel
 	@Override
 	public boolean isCellEditable(int row, int col)
 	{
-		return true;
+		return false;
 	}
 
 	@Override

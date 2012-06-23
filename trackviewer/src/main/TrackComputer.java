@@ -1,7 +1,9 @@
 
-package viewer;
+package main;
 
 import java.util.List;
+
+import common.GeoUtils;
 
 import track.Track;
 import track.TrackPoint;
@@ -39,7 +41,8 @@ public class TrackComputer
 		{
 			if (point.getDistance() <= prevPoint.getDistance())
 			{
-				double dist = prevPoint.getDistance() + GeoUtils.computeDistance(prevPoint, point);
+				double delta = GeoUtils.computeDistance(prevPoint.getPos(), point.getPos());
+				double dist = prevPoint.getDistance() + delta;
 				point.setDistance(dist);
 			}
 

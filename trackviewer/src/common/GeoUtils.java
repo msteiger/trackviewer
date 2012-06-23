@@ -1,9 +1,7 @@
 
-package viewer;
+package common;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
-
-import track.TrackPoint;
 
 /**
  * Some geo-related utilities
@@ -25,12 +23,12 @@ public class GeoUtils
 	{
 		double radius = 6371000; // 6371 kilometers == 3960 miles
 
-		double deltaLat = toRadian(lat2 - lat1);
-		double deltaLon = toRadian(lon2 - lon1);
+		double deltaLat = Math.toRadians(lat2 - lat1);
+		double deltaLon = Math.toRadians(lon2 - lon1);
 
 		// a is the square of half the chord length between the points
-		double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) + Math.cos(toRadian(lat1))
-				* Math.cos(toRadian(lat2)) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+		double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) + Math.cos(Math.toRadians(lat1))
+				* Math.cos(Math.toRadians(lat2)) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
 
 		// c is the angular distance in radians
 		double c = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
@@ -40,23 +38,15 @@ public class GeoUtils
 
 	/**
 	 * @see GeoUtils#computeDistance(double, double, double, double)
-	 * @param point1 trackpoint 1
-	 * @param point2 trackpoint 2
+	 * @param pos1 position 1
+	 * @param pos2 position 2
 	 * @return the distance in meters
 	 */
-	public static double computeDistance(TrackPoint point1, TrackPoint point2)
+	public static double computeDistance(GeoPosition pos1, GeoPosition pos2)
 	{
-		GeoPosition pos1 = point1.getPos();
-		GeoPosition pos2 = point2.getPos();
-
 		return computeDistance(
 				pos1.getLatitude(), pos1.getLongitude(), 
 				pos2.getLatitude(), pos2.getLongitude());
-	}
-
-	private static double toRadian(double val)
-	{
-		return (Math.PI / 180) * val;
 	}
 
 }

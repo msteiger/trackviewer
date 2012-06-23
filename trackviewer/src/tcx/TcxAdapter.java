@@ -19,6 +19,8 @@ import track.TrackPoint;
 
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.ActivityLapT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.ActivityT;
+import com.garmin.xmlschemas.trainingcenterdatabase.v2.CourseListT;
+import com.garmin.xmlschemas.trainingcenterdatabase.v2.CourseT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.PositionT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackpointT;

@@ -1,5 +1,5 @@
 
-package viewer;
+package main;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

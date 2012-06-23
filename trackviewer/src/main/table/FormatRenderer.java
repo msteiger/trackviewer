@@ -1,5 +1,5 @@
 
-package viewer;
+package main.table;
 
 import java.text.Format;
 

@@ -1,5 +1,5 @@
 
-package viewer;
+package main.table;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,7 +33,7 @@ public class JShadedTable extends JTable
 	 * @see JTable#JTable(TableModel)
 	 * @param dm the data model for the table
 	 */
-	JShadedTable(TableModel dm)
+	public JShadedTable(TableModel dm)
 	{
 		super(dm);
 	}
