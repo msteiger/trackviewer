@@ -15,8 +15,9 @@ public final class TrackTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
-	private String[] columnNames = { "Name", "Distance"};
-	private Class<?>[] columnClass = { String.class, Double.class };
+	private final String[] columnIds = { "date", "distance", "speed" };
+	private final String[] columnLabels = { "Date", "Distance (km)", "Average Speed (km/h)"};
+	private final Class<?>[] columnClass = { String.class, Double.class, Double.class };
 
 	/**
 	 * @param tracks the list of tracks
@@ -25,11 +26,21 @@ public final class TrackTableModel extends AbstractTableModel
 	{
 		this.tracks = tracks;
 	}
+	
+	/**
+	 * @return the columnLabels
+	 */
+	public String[] getColumnLabels()
+	{
+		return columnLabels;
+	}
+
+
 
 	@Override
 	public String getColumnName(int col)
 	{
-		return columnNames[col];
+		return columnIds[col];
 	}
 	
 	@Override
@@ -47,7 +58,7 @@ public final class TrackTableModel extends AbstractTableModel
 	@Override
 	public int getColumnCount()
 	{
-		return columnNames.length;
+		return columnIds.length;
 	}
 
 	@Override
@@ -58,10 +69,13 @@ public final class TrackTableModel extends AbstractTableModel
 		switch (col)
 		{
 		case 0:
-			return track.getName();
+			return track.getStartTime();
 			
 		case 1:
 			return track.getTotalDistance();
+			
+		case 2:
+			return track.getAverageSpeed();
 		}
 		
 		return track;

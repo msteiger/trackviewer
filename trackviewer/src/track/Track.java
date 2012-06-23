@@ -4,6 +4,7 @@ package track;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
@@ -40,14 +41,6 @@ public class Track
 	 */
 	public Track()
 	{
-	}
-
-	/**
-	 * @param name the name of the track
-	 */
-	public Track(String name)
-	{
-		this.name = name;
 	}
 
 	/**
@@ -97,6 +90,31 @@ public class Track
 		return name;
 	}
 
+	/**
+	 * @return the average speed in km/h
+	 */
+	public double getAverageSpeed()
+	{
+		double sum = 0;
+		for (TrackPoint point : points)
+		{
+			sum += point.getSpeed();
+		}
+		
+		return sum / points.size();
+	}
+	
+	/**
+	 * @return the first time stamp of the track
+	 */
+	public Date getStartTime()
+	{
+		if (points.isEmpty())
+			return null;
+		
+		return points.get(0).getTime();
+	}
+	
 	/**
 	 * @return the total distance of the track
 	 */

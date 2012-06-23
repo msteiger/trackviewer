@@ -68,15 +68,25 @@ public class TcxAdapter
 			throw new IOException("Error parsing inputstream", e);
 		}
 
+		CourseListT courses = tcx.getCourses();
+		if (courses != null)
+		{			System.out.println("Courses:");
+		for (CourseT course : courses.getCourse())
+		{
+			System.out.println(course);
+		}
+		}
+		
 		ArrayList<Track> list = new ArrayList<Track>();
 
 		for (ActivityT activity : tcx.getActivities().getActivity())
 		{
 			for (ActivityLapT lap : activity.getLap())
 			{
+				Track track = new Track();
+
 				for (TrackT trk : lap.getTrack())
 				{
-					Track track = new Track("Hello World");
 					
 					for (TrackpointT pt : trk.getTrackpoint())
 					{
@@ -95,8 +105,8 @@ public class TcxAdapter
 						}
 					}
 
-					list.add(track);
 				}
+				list.add(track);
 			}
 		}
 

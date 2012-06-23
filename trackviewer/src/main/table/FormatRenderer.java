@@ -40,7 +40,16 @@ public class FormatRenderer extends DefaultTableCellRenderer
 	@Override
 	public void setValue(Object value)
 	{
-		super.setValue(formatter.format(value));
+		String v = null;
+		try
+		{
+			v = formatter.format(value);
+		}
+		catch (IllegalArgumentException e)
+		{
+			v = String.valueOf(value);
+		}
+		super.setValue(v);
 	}
 
 }

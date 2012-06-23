@@ -77,7 +77,7 @@ public class TrackPoint
 	}
 
 	/**
-	 * @return the distance
+	 * @return the distance in meters
 	 */
 	public double getDistance()
 	{
@@ -85,7 +85,7 @@ public class TrackPoint
 	}
 
 	/**
-	 * @param distance the distance to set
+	 * @param distance the distance in meters
 	 */
 	public void setDistance(double distance)
 	{

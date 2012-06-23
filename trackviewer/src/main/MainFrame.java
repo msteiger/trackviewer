@@ -2,13 +2,14 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +23,20 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.xml.bind.JAXBException;
 
 import main.table.DistanceFormat;
 import main.table.FormatRenderer;
 import main.table.JShadedTable;
+import main.table.SpeedFormat;
 import main.table.TrackTableModel;
-
 import tcx.TcxAdapter;
 import track.Track;
 
@@ -42,6 +47,8 @@ import track.Track;
 public class MainFrame extends JFrame
 {
 	private static final long serialVersionUID = -9215006987029836062L;
+	private MapViewer viewer;
+	private JTable table;
 
 	/**
 	 * Constructs a new instance
@@ -54,26 +61,79 @@ public class MainFrame extends JFrame
 
 		List<Track> tracks = readTracks(folder);
 
-		MapViewer viewer = new MapViewer();
-		viewer.setRoute(tracks.get(0));
+		viewer = new MapViewer();
 
+		table = createTable(tracks);
+
+		// put in a scrollpane to add scroll bars
+		JScrollPane tablePane = new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		
+		//Create a split pane with the two components in it.
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tablePane, viewer);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(150);
+
+		//Provide minimum sizes for the two components in the split pane
+		Dimension minimumSize = new Dimension(100, 50);
+		tablePane.setMinimumSize(minimumSize);
+		viewer.setMinimumSize(minimumSize);
+		
 		add(createMenu(), BorderLayout.NORTH);
-		add(viewer);
-		add(createTable(tracks), BorderLayout.WEST);
+		add(splitPane);
 	}
 
-	private Component createTable(List<Track> tracks)
+	private JTable createTable(final List<Track> tracks)
 	{
-		TableModel model = new TrackTableModel(tracks);
+		TrackTableModel model = new TrackTableModel(tracks);
 
 		JTable table = new JShadedTable(model);
-		FormatRenderer distanceRenderer = new FormatRenderer(new DistanceFormat());
-		table.getColumn("Distance").setCellRenderer(distanceRenderer);
-		
-		JScrollPane scrollPane = new JScrollPane(table);
-		table.setFillsViewportHeight(true);
 
-		return scrollPane;
+		// Workaround to separate IDs from labels
+		// By default, ID is not set or used by JTable
+		// but the columnModel uses it. If not available it uses
+		// the ID that is defined by the TableModel
+		// So, the ID must be explicitly set for the columnModel to continue
+		// to work.
+		String[] labels = model.getColumnLabels();
+		for (int i = 0; i < model.getColumnCount(); i++)
+		{
+			table.getColumnModel().getColumn(i).setIdentifier(model.getColumnName(i));
+			table.getColumnModel().getColumn(i).setHeaderValue(labels[i]);
+		}
+		
+		// set formatting of columns
+		FormatRenderer dateRenderer = new FormatRenderer(SimpleDateFormat.getDateTimeInstance(), SwingConstants.LEFT);
+		FormatRenderer distanceRenderer = new FormatRenderer(new DistanceFormat());
+		FormatRenderer speedRenderer = new FormatRenderer(new SpeedFormat());
+		
+		table.getColumn("date").setCellRenderer(dateRenderer);
+		table.getColumn("distance").setCellRenderer(distanceRenderer);
+		table.getColumn("speed").setCellRenderer(speedRenderer);
+
+		// set sorting (broken for Dates)
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+		table.setRowSorter(sorter);
+		
+		table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		table.getSelectionModel().addListSelectionListener(new ListMultiSelectionListener()
+		{
+			@Override
+			public void valueChanged(List<Integer> indices)
+			{
+				List<Track> selTracks = new ArrayList<Track>();
+				
+				for (Integer idx : indices)
+				{
+					selTracks.add(tracks.get(idx));
+				}
+				
+				viewer.showRoute(selTracks);
+				
+			}
+		});
+		
+		return table;
 	}
 
 	private List<Track> readTracks(File folder)
@@ -109,7 +169,8 @@ public class MainFrame extends JFrame
 			try
 			{
 				fis = new FileInputStream(new File(folder, fname));
-				tracks.addAll(tcxAdapter.read(fis));
+				List<Track> read = tcxAdapter.read(fis);
+				tracks.addAll(read);
 				System.out.println("Loaded " + fname);
 			}
 			catch (IOException e)

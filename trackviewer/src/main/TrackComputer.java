@@ -81,12 +81,12 @@ public class TrackComputer
 		TrackPoint high = points.get(highBound);
 		TrackPoint low = points.get(lowBound);
 
-		double deltaDistance = high.getDistance() - low.getDistance();
-		long deltaTime = high.getTime().getTime() - low.getTime().getTime();
+		double deltaDistance = high.getDistance() - low.getDistance();	     // meters
+		long deltaTime = high.getTime().getTime() - low.getTime().getTime(); // milliseconds
 
 		if (deltaTime != 0)
 		{
-			points.get(index).setSpeed(deltaDistance / 3600000.0);
+			points.get(index).setSpeed(deltaDistance * 3600000.0 / deltaTime);
 		}
 	}
 }

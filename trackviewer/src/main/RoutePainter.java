@@ -20,7 +20,7 @@ import org.jdesktop.swingx.painter.Painter;
  */
 public class RoutePainter implements Painter<JXMapViewer>
 {
-	private Color color = Color.RED;
+	private Color color;
 	private boolean antiAlias = true;
 	
 	private List<GeoPosition> track;
@@ -30,9 +30,35 @@ public class RoutePainter implements Painter<JXMapViewer>
 	 */
 	public RoutePainter(List<GeoPosition> track)
 	{
+		this(track, Color.RED);
+	}
+	
+	/**
+	 * @param track the track
+	 * @param color the color
+	 */
+	public RoutePainter(List<GeoPosition> track, Color color)
+	{
 		// copy the list so that changes in the 
 		// original list do not have an effect here
 		this.track = new ArrayList<GeoPosition>(track);
+		this.color = color;
+	}
+	
+	/**
+	 * @return the color
+	 */
+	public Color getColor()
+	{
+		return color;
+	}
+
+	/**
+	 * @param color the color to set
+	 */
+	public void setColor(Color color)
+	{
+		this.color = color;
 	}
 
 	@Override

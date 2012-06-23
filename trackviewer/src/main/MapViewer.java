@@ -2,7 +2,10 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
@@ -67,19 +70,30 @@ public class MapViewer extends JComponent
 	}
 	
 	/**
-	 * Displays a track route
-	 * @param track the track
+	 * Displays one or more track routes
+	 * @param tracks the list of track
 	 */
-	public void setRoute(Track track)
+	public void showRoute(List<Track> tracks)
 	{
 		// Set the focus
-		mapViewer.setZoom(10);
-		mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
+//		mapViewer.setZoom(10);
+//		mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
 
-		// Create route from geo-positions
-		RoutePainter routePainter = new RoutePainter(track.getRoute());
+		List<RoutePainter> painters = new ArrayList<RoutePainter>();
 		
-		painter.addPainter(routePainter);
+		int i = 0;
+		for (Track track : tracks)
+		{
+			painters.add(new RoutePainter(track.getRoute(), getRouteColor(i++)));
+		}
+		
+		painter.setPainters(painters);
 
+	}
+
+	private Color getRouteColor(int i)
+	{
+		Color colors[] = { Color.RED, Color.BLUE, Color.LIGHT_GRAY, Color.YELLOW, Color.CYAN };
+		return colors[i % colors.length];
 	}
 }
