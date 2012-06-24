@@ -122,7 +122,7 @@ public class Track
 	}
 	
 	/**
-	 * @return the total distance of the track
+	 * @return the total distance of the track in meters
 	 */
 	public double getTotalDistance()
 	{
@@ -130,5 +130,13 @@ public class Track
 			return 0;
 		
 		return points.get(points.size() - 1).getDistance();
+	}
+
+	/**
+	 * @return the total time of the track
+	 */
+	public Date getTotalTime()
+	{
+		return points.get(points.size() - 1).getTime();
 	}
 }

@@ -36,6 +36,7 @@ import main.table.DistanceFormat;
 import main.table.FormatRenderer;
 import main.table.JShadedTable;
 import main.table.SpeedFormat;
+import main.table.TimeFormat;
 import main.table.TrackTableModel;
 import tcx.TcxAdapter;
 import track.Track;
@@ -96,7 +97,7 @@ public class MainFrame extends JFrame
 	{
 		TrackTableModel model = new TrackTableModel(tracks);
 
-		JTable table = new JShadedTable(model);
+		final JTable table = new JShadedTable(model);
 
 		// Workaround to separate IDs from labels
 		// By default, ID is not set or used by JTable
@@ -114,16 +115,18 @@ public class MainFrame extends JFrame
 		// set formatting of columns
 		FormatRenderer dateRenderer = new FormatRenderer(SimpleDateFormat.getDateTimeInstance(), SwingConstants.LEFT);
 		FormatRenderer distanceRenderer = new FormatRenderer(new DistanceFormat());
+		FormatRenderer timeRenderer = new FormatRenderer(new TimeFormat());
 		FormatRenderer speedRenderer = new FormatRenderer(new SpeedFormat());
 		
 		table.getColumn("date").setCellRenderer(dateRenderer);
 		table.getColumn("distance").setCellRenderer(distanceRenderer);
+		table.getColumn("time").setCellRenderer(timeRenderer);
 		table.getColumn("speed").setCellRenderer(speedRenderer);
 
 		// Set row sorter
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
 		table.setRowSorter(sorter);
-		
+
 		// Set selection model
 		table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.getSelectionModel().addListSelectionListener(new ListMultiSelectionListener()
@@ -135,6 +138,7 @@ public class MainFrame extends JFrame
 				
 				for (Integer idx : indices)
 				{
+					idx = table.convertRowIndexToModel(idx);
 					selTracks.add(tracks.get(idx));
 				}
 				
@@ -180,7 +184,16 @@ public class MainFrame extends JFrame
 			{
 				fis = new FileInputStream(new File(folder, fname));
 				List<Track> read = tcxAdapter.read(fis);
-				tracks.addAll(read);
+				
+				for (Track t : read)
+				{
+					// skip empty tracks
+					if (!t.getPoints().isEmpty())
+					{
+						tracks.add(t);
+					}
+				}
+				
 				System.out.println("Loaded " + fname);
 			}
 			catch (IOException e)
