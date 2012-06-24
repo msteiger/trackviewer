@@ -2,7 +2,7 @@
 package main.chart;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -25,6 +25,8 @@ import javax.swing.JComponent;
  */
 public class JChart extends JComponent
 {
+	private static final long serialVersionUID = -7082516791435983958L;
+
 	private Double boundHigh;
 	private Double boundLow;
 	private String horzDesc;
@@ -32,7 +34,6 @@ public class JChart extends JComponent
 
 	private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
 	private final Rectangle chartRect  = new Rectangle();
-	private final Font _fontLegend = this.getFont();
 	
 	@Override
 	protected void paintComponent(Graphics g)
@@ -46,11 +47,15 @@ public class JChart extends JComponent
 
 		drawHorzGrid(g);
 		drawVertGrid(g);
-		
+			
 		for (List<Point2D> s : series)
 		{
 			drawSeries(s, (Graphics2D)g);
 		}
+		
+		drawAxisX(g);
+		drawAxisY(g);
+
 	}
 
 	private void updateChartRect()
@@ -71,42 +76,111 @@ public class JChart extends JComponent
 		chartRect.setRect(px1, py1, width - px1 - px2, height - py1 - py2);
 	}
 	
-	private void drawVertGrid(Graphics g)
+	private void drawVertGrid(Graphics g)	// horizontal lines
 	{
-		final double pad_text = 5.0f;
-		final double pad_indi = 3.0f;
-        final double overlap = 3.0f;
-
-        final int arrowSize = 3;
+		final int pad_text = 5;
+        final int overlap = 3;
 
 		double val = boundLow.getY();
 		double range = boundHigh.getY() - boundLow.getY();
-		double multi = findMultiplier(chartRect.getHeight(), range, 30.0f);
+		double multi = findMultiplier(chartRect.getHeight(), range, 40.0);
 
+		FontMetrics fm = g.getFontMetrics();
 		DecimalFormat df = new DecimalFormat("#.##");
+
+		int xLeft = (int)(chartRect.getMinX() - overlap);
+		int xRight = (int)(chartRect.getMaxX() + overlap);
 
 		do
 		{
 			int pos = (int) (chartRect.getMaxY() - ((val - boundLow.getY()) / range) * chartRect.getHeight());
 
-			String str = df.format(val);
-			Rectangle2D size = g.getFontMetrics().getStringBounds(str, g);
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawLine(xLeft, pos, xRight, pos);
 
-			int x = (int) (chartRect.getMinX() - size.getWidth() - pad_text);
-			int y = pos;
+			String str = df.format(val);
+			Rectangle2D size = fm.getStringBounds(str, g);
+
+			int tx = (int) (chartRect.getMinX() - size.getWidth() - pad_text);
+			int asc = fm.getAscent();
+			int ty = (int) (pos + (asc * 0.5)) - 1;		// the -1 makes it look better
 
 			g.setColor(Color.BLACK);
-			g.drawString(str, x, y);
-
-			g.setColor(Color.LIGHT_GRAY);
-			g.drawLine((int)(chartRect.getMinX() - pad_indi), pos, (int)(chartRect.getMaxX() + overlap), pos);
+			g.drawString(str, tx, ty);
 
 			val += multi;
 		}
 		while (val <= boundHigh.getY());
+	}
 
-		// Draw horizontal arrow
-		int arrowOut = 5;
+	private void drawHorzGrid(Graphics g)		// vertical lines
+	{
+		final int pad_text = 5;
+        final int overlap = 3;
+
+		double range = boundHigh.getX() - boundLow.getX();
+		double multi = findMultiplier(chartRect.getWidth(), range, 40.0);
+		double val = boundLow.getX();
+
+		DecimalFormat df = new DecimalFormat("#.##");
+
+		int yTop = (int)chartRect.getMinY() - overlap;
+		int yBot = (int)chartRect.getMaxY() + overlap;
+
+		FontMetrics fm = g.getFontMetrics();
+
+		do
+		{
+			int pos = (int) (chartRect.getMinX() + ((val - boundLow.getX()) / range) * chartRect.getWidth());
+
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawLine(pos, yTop, pos, yBot);
+
+			String str = df.format(val);
+			Rectangle2D size = fm.getStringBounds(str, g);
+
+			int tx = (int) (pos - size.getWidth() * 0.5);
+			int ty = (int) (chartRect.getMaxY() + size.getHeight() + pad_text);
+
+			g.setColor(Color.BLACK);
+			g.drawString(str, tx, ty);
+
+			val += multi;
+		}
+		while (val <= boundHigh.getX());
+
+		// Draw right grid line
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawLine((int)chartRect.getMaxX(), yTop, (int)chartRect.getMaxX(), yBot);
+	}
+	
+	private void drawAxisX(Graphics g)
+	{
+        final int arrowSize = 3;
+        final int overlap = 3;
+		final int arrowOut = 5;
+
+        // Draw horizontal axis arrow
+		int x = (int) (chartRect.getMaxX() + overlap + arrowOut);
+		int y = (int) chartRect.getMaxY();
+		g.setColor(Color.BLACK);
+		g.drawLine(x, y, (int)chartRect.getMinX(), y);
+		g.drawLine(x, y, x - arrowSize, y - arrowSize);
+		g.drawLine(x, y, x - arrowSize, y + arrowSize);
+
+		// Draw horizontal axis description
+		x = (int) (chartRect.getMaxX() + overlap + arrowSize * 3);
+		y = (int) (chartRect.getMaxY() + g.getFontMetrics().getAscent() - 1);
+		g.drawString(horzDesc, x, y);
+	}
+	
+	private void drawAxisY(Graphics g)
+	{
+        final int arrowSize = 3;
+        final int overlap = 3;
+        final int arrowOut = 5;
+        
+        // Draw vertical axis arrow
 		int x = (int) (chartRect.getMinX());
 		int y = (int) (chartRect.getMinY() - overlap - arrowOut);
 		g.setColor(Color.BLACK);
@@ -119,59 +193,6 @@ public class JChart extends JComponent
 		x = (int) (chartRect.getMinX() - descSize.getWidth() * 0.5);
 		y = (int) (chartRect.getMinY() - overlap - arrowOut - 2 * arrowSize);
 		g.drawString(vertDesc, x, y); 
-	}
-
-	private void drawHorzGrid(Graphics g)
-	{
-		g.setFont(_fontLegend);
-		g.setColor(Color.BLACK);
-		
-		final int pad_text = 5;
-		final int pad_indi = 3;
-        final int arrowSize = 3;
-        final int overlap = 3;
-
-		double range = boundHigh.getX() - boundLow.getX();
-		double multi = findMultiplier(chartRect.getWidth(), range, 30.0f);
-		double val = boundLow.getX();
-
-		DecimalFormat df = new DecimalFormat("#.##");
-
-		do
-		{
-			int pos = (int) (chartRect.getMinX() + ((val - boundLow.getX()) / range) * chartRect.getWidth());
-
-			String str = df.format(val);
-			Rectangle2D size = g.getFontMetrics().getStringBounds(str, g);
-
-			int x = (int) (pos - size.getWidth() * 0.5f);
-			int y = (int) (chartRect.getMaxY() + size.getHeight() + pad_text);
-
-			g.setColor(Color.BLACK);
-			g.drawString(str, x, y);
-			g.setColor(Color.LIGHT_GRAY);
-			g.drawLine(pos, (int)chartRect.getMinY() - overlap, pos, (int)(chartRect.getMaxY() + pad_indi));
-
-			val += multi;
-		}
-		while (val <= boundHigh.getX());
-
-		// Draw right grid line
-		g.drawLine((int)chartRect.getMaxX(), (int)chartRect.getMinY()- overlap, (int)chartRect.getMaxX(), (int)(chartRect.getMaxY() + pad_indi));
-
-		// Draw horizontal arrow
-		int arrowOut = 5;
-		int x = (int) (chartRect.getMaxX() + overlap + arrowOut);
-		int y = (int) chartRect.getMaxY();
-		g.setColor(Color.BLACK);
-		g.drawLine(x, y, (int)chartRect.getMinX(), y);
-		g.drawLine(x, y, x - arrowSize, y - arrowSize);
-		g.drawLine(x, y, x - arrowSize, y + arrowSize);
-
-		// Draw horizontal axis description
-		x = (int) (chartRect.getMaxX() + overlap + arrowSize * 3);
-		y = (int) (chartRect.getMaxY() + g.getFontMetrics().getAscent() - 1);
-		g.drawString(horzDesc, x, y);
 	}
 	
 	/**
@@ -192,16 +213,22 @@ public class JChart extends JComponent
 		{
 			Rectangle2D rc = computeBounds(list);
 			
+			if (rc == null)		// no points
+				continue;
+			
 			if (bounds == null)
 				bounds = rc; else
 				Rectangle2D.union(bounds, rc, bounds);
 		}
-
-		Point2D rangeY = roundRange(bounds.getMinY(), bounds.getMaxY());
 		
-		boundLow  = new Point2D.Double(bounds.getMinX(), rangeY.getX());
-		boundHigh = new Point2D.Double(bounds.getMaxX(), rangeY.getY());
-
+		if (bounds != null)
+		{			
+			Point2D rangeY = roundRange(bounds.getMinY(), bounds.getMaxY());
+		
+			boundLow  = new Point2D.Double(bounds.getMinX(), rangeY.getX());
+			boundHigh = new Point2D.Double(bounds.getMaxX(), rangeY.getY());
+		}
+		
 		repaint();
 	}
 	
@@ -219,6 +246,9 @@ public class JChart extends JComponent
 	
 	private Rectangle2D.Double computeBounds(List<Point2D> points)
 	{
+		if (points.isEmpty())
+			return null;
+		
 		Point2D first = points.get(0);
 		
 		double minX = first.getX();
@@ -267,6 +297,9 @@ public class JChart extends JComponent
 	
 	private void drawSeries(List<Point2D> series, Graphics2D g)
 	{
+		if (series.isEmpty())
+			return;
+		
 		Point2D first = series.get(0);
 		Path2D path = new Path2D.Double();
 
@@ -288,7 +321,11 @@ public class JChart extends JComponent
 		path.lineTo(chartRect.getMaxX(), chartRect.getMaxY());
 		path.lineTo(chartRect.getMinX(), chartRect.getMaxY());
 		
-		Color[] colors = new Color[] { new Color(128, 255, 212), new Color(123, 104, 238) };
+		Color colorTop = new Color(128, 255, 212);
+		Color colorBottom = new Color(123, 104, 238);
+		Color colorLine = new Color(0, 0, 255);
+		
+		Color[] colors = new Color[] { colorTop, colorBottom };
 		float[] fractions = { 0, 1 };
 		float top = (float) chartRect.getMinY();
 		float bottom = (float) chartRect.getMaxY();
@@ -296,7 +333,7 @@ public class JChart extends JComponent
 		
 		g.fill(path);
 
-		g.setPaint(new Color(0, 0, 255));
+		g.setPaint(colorLine);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.draw(filled);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
