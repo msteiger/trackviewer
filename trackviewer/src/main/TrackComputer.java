@@ -1,6 +1,7 @@
 
 package main;
 
+import java.util.Date;
 import java.util.List;
 
 import common.GeoUtils;
@@ -21,11 +22,30 @@ public class TrackComputer
 	{
 		fixNonNullStarts(track);
 		fixDistances(track);
+		fixTimes(track);
 		
 		for (int i=0; i<track.getPoints().size(); i++)
 		{
 			computeSpeed(track, i);
 		}
+	}
+
+	private static void fixTimes(Track track)
+	{
+		List<TrackPoint> points = track.getPoints();
+
+		if (points.isEmpty())
+			return;
+		
+		long start = points.get(0).getTime().getTime();
+
+		for (TrackPoint point : points)
+		{
+			long time = point.getTime().getTime();
+			point.getTime().setTime(time - start);
+		}
+		
+		track.setStartTime(new Date(start));
 	}
 
 	private static void fixDistances(Track track)
@@ -86,7 +106,7 @@ public class TrackComputer
 
 		if (deltaTime != 0)
 		{
-			points.get(index).setSpeed(deltaDistance * 3600000.0 / deltaTime);
+			points.get(index).setSpeed(deltaDistance * 3600.0 / deltaTime);
 		}
 	}
 }

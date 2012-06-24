@@ -49,6 +49,7 @@ public class MainFrame extends JFrame
 	private static final long serialVersionUID = -9215006987029836062L;
 	private MapViewer viewer;
 	private JTable table;
+	private TrackChart trackChart;
 
 	/**
 	 * Constructs a new instance
@@ -68,21 +69,29 @@ public class MainFrame extends JFrame
 		// put in a scrollpane to add scroll bars
 		JScrollPane tablePane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		
-		//Create a split pane with the two components in it.
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tablePane, viewer);
-		splitPane.setOneTouchExpandable(true);
-		splitPane.setDividerLocation(150);
+
+		trackChart = new TrackChart();
+				
+		//Create the main split pane 
+		JSplitPane chartSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewer, trackChart);
+		chartSplitPane.setDividerLocation(550);
+
+		//Create the main split pane 
+		JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tablePane, chartSplitPane);
+		mainSplitPane.setDividerLocation(230);
 
 		//Provide minimum sizes for the two components in the split pane
 		Dimension minimumSize = new Dimension(100, 50);
 		tablePane.setMinimumSize(minimumSize);
-		viewer.setMinimumSize(minimumSize);
+		chartSplitPane.setMinimumSize(minimumSize);
 		
 		add(createMenu(), BorderLayout.NORTH);
-		add(splitPane);
+		add(mainSplitPane);
+		
+		table.getSelectionModel().setSelectionInterval(0, 0);
 	}
 
+	
 	private JTable createTable(final List<Track> tracks)
 	{
 		TrackTableModel model = new TrackTableModel(tracks);
@@ -111,10 +120,11 @@ public class MainFrame extends JFrame
 		table.getColumn("distance").setCellRenderer(distanceRenderer);
 		table.getColumn("speed").setCellRenderer(speedRenderer);
 
-		// set sorting (broken for Dates)
+		// Set row sorter
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
 		table.setRowSorter(sorter);
 		
+		// Set selection model
 		table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.getSelectionModel().addListSelectionListener(new ListMultiSelectionListener()
 		{
@@ -129,7 +139,7 @@ public class MainFrame extends JFrame
 				}
 				
 				viewer.showRoute(selTracks);
-				
+				trackChart.setTracks(selTracks);
 			}
 		});
 		
@@ -284,7 +294,7 @@ public class MainFrame extends JFrame
 	{
 		JFrame frame = new MainFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
+		frame.setSize(1024, 768);
 		frame.setVisible(true);
 	}
 }

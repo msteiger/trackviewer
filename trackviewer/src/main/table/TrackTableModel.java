@@ -1,6 +1,7 @@
 
 package main.table;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -17,7 +18,7 @@ public final class TrackTableModel extends AbstractTableModel
 	private final List<Track> tracks;
 	private final String[] columnIds = { "date", "distance", "speed" };
 	private final String[] columnLabels = { "Date", "Distance (km)", "Average Speed (km/h)"};
-	private final Class<?>[] columnClass = { String.class, Double.class, Double.class };
+	private final Class<?>[] columnClass = { Date.class, Double.class, Double.class };
 
 	/**
 	 * @param tracks the list of tracks

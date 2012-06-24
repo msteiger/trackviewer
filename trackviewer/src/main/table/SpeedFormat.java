@@ -19,7 +19,7 @@ public class SpeedFormat extends Format
 	{
 		double val = (Double)obj;
 
-		return toAppendTo.append(String.format("%.2f km/h", val * 0.001));
+		return toAppendTo.append(String.format("%.2f km/h", val));
 	}
 
 	@Override

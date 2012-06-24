@@ -35,6 +35,7 @@ public class Track
 	};
 
 	private String name;
+	private Date startTime;
 
 	/**
 	 * Default constructor (no name set)
@@ -105,14 +106,19 @@ public class Track
 	}
 	
 	/**
-	 * @return the first time stamp of the track
+	 * @param startTime the start time the track
+	 */
+	public void setStartTime(Date startTime)
+	{
+		this.startTime = startTime; 
+	}
+	
+	/**
+	 * @return the start time the track
 	 */
 	public Date getStartTime()
 	{
-		if (points.isEmpty())
-			return null;
-		
-		return points.get(0).getTime();
+		return startTime; 
 	}
 	
 	/**
