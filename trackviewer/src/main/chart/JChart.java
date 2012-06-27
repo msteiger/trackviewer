@@ -351,11 +351,11 @@ public class JChart extends JComponent
 		return chartRect.getMinX() + fx * (val - boundLow.getX());
 	}
 	
-//	private double ScreenXToValueX(double val)
-//	{
-//		double fx = (boundHigh.getX() - boundLow.getX()) / chartRect.getWidth();
-//		return boundLow.getX() + fx * (val - chartRect.getMinX());
-//	}
+	private double screenXToValueX(double val)
+	{
+		double fx = (boundHigh.getX() - boundLow.getX()) / chartRect.getWidth();
+		return boundLow.getX() + fx * (val - chartRect.getMinX());
+	}
 	
 	/**
 	 * @param text the description on the vertical axis
@@ -371,6 +371,41 @@ public class JChart extends JComponent
 	public void setHorzDesc(String text)
 	{
 		horzDesc = text;
+	}
+
+	private int FindIndexOfValueX(double val, int serie)
+	{
+		int result = -1;
+		
+		for (Point2D pt : series.get(serie))
+		{
+			if (pt.getX() > val)
+				return result;
+			
+			result++;
+		}
+
+		return -1;
+	}
+
+	/**
+	 * @param x the x-value in local screen coords
+	 * @param y the y-value in local screen coords
+	 * @return the index or -1 if not found
+	 */
+	public int getIndexAt(int x, int y)
+	{
+		double vx = screenXToValueX(x);
+		
+		for (int i=0; i<series.size(); i++)
+		{
+			int idx = FindIndexOfValueX(vx, i);
+			
+			if (idx != -1)
+				return idx;
+		}
+		
+		return -1;
 	}
 	
 }

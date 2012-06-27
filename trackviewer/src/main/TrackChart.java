@@ -4,9 +4,12 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -44,6 +47,8 @@ public class TrackChart extends JComponent
 	
 	private List<Track> tracks;
 	private JChart chart;
+	
+	private List<SelectionListener> selectionListeners = new CopyOnWriteArrayList<SelectionListener>();
 
 	/**
 	 * Creates a new instance
@@ -51,6 +56,20 @@ public class TrackChart extends JComponent
 	public TrackChart()
 	{
 		chart = new JChart();
+		
+		chart.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				int idx = chart.getIndexAt(e.getX(), e.getY());
+
+				for (SelectionListener sl : selectionListeners)
+				{
+					sl.selected(idx);
+				}
+			}
+		});
 		
 		//Create the toolbar.
 	    JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
@@ -140,6 +159,17 @@ public class TrackChart extends JComponent
 		this.tracks = new ArrayList<Track>(tracks);
 		
 		reload();
+	}
+	
+	public void addSelectionListener(SelectionListener sl)
+	{
+		selectionListeners.add(sl);
+	}
+	
+	
+	public void removeSelectionListener(SelectionListener sl)
+	{
+		selectionListeners.remove(sl);
 	}
 	
 	private void reload()

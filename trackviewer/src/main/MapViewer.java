@@ -19,6 +19,7 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.LocalResponseCache;
 import org.jdesktop.swingx.mapviewer.TileFactoryInfo;
 import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.Painter;
 
 import track.Track;
 
@@ -34,7 +35,7 @@ public class MapViewer extends JComponent
 	private CompoundPainter<JXMapViewer> painter;
 
 	private JXMapViewer mapViewer = new JXMapViewer();
-
+	
 	/**
 	 * Constructs a new instance
 	 */
@@ -79,12 +80,19 @@ public class MapViewer extends JComponent
 //		mapViewer.setZoom(10);
 //		mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
 
-		List<RoutePainter> painters = new ArrayList<RoutePainter>();
+		List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 		
 		int i = 0;
 		for (Track track : tracks)
 		{
-			painters.add(new RoutePainter(track.getRoute(), getRouteColor(i++)));
+			List<GeoPosition> route = track.getRoute();
+			Color color = getRouteColor(i++);
+
+			MarkerPainter markerPainter = new MarkerPainter(route, color);  
+			RoutePainter routePainter = new RoutePainter(route, color);
+			
+			painters.add(routePainter);
+			painters.add(markerPainter);
 		}
 		
 		painter.setPainters(painters);
@@ -95,5 +103,20 @@ public class MapViewer extends JComponent
 	{
 		Color colors[] = { Color.RED, Color.BLUE, Color.LIGHT_GRAY, Color.YELLOW, Color.CYAN };
 		return colors[i % colors.length];
+	}
+
+	/**
+	 * @param index
+	 */
+	public void setMarker(int index)
+	{
+		for (Painter<?> p : painter.getPainters())
+		{
+			if (p instanceof MarkerPainter)
+			{
+				MarkerPainter mp = (MarkerPainter) p;
+				mp.setMarker(index);
+			}
+		}
 	}
 }

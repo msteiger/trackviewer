@@ -72,6 +72,15 @@ public class MainFrame extends JFrame
 		table.setFillsViewportHeight(true);
 
 		trackChart = new TrackChart();
+		
+		trackChart.addSelectionListener(new SelectionListener()
+		{
+			@Override
+			public void selected(int index)
+			{
+				viewer.setMarker(index);
+			}
+		});
 				
 		//Create the main split pane 
 		JSplitPane chartSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewer, trackChart);
