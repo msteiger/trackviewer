@@ -76,9 +76,9 @@ public class MainFrame extends JFrame
 		trackChart.addSelectionListener(new SelectionListener()
 		{
 			@Override
-			public void selected(int index)
+			public void selected(int series, int index)
 			{
-				viewer.setMarker(index);
+				viewer.setMarker(series, index);
 			}
 		});
 				

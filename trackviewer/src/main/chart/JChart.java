@@ -15,6 +15,7 @@ import java.awt.geom.Point2D.Double;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -232,6 +233,15 @@ public class JChart extends JComponent
 		repaint();
 	}
 	
+	/**
+	 * The series data as unmodifiable list
+	 * @return the series data
+	 */
+	public List<List<Point2D>> getData()
+	{
+		return Collections.unmodifiableList(series);
+	}
+	
 	private Point2D roundRange(double val_min, double val_max)
 	{
 		double rnd_exp;
@@ -389,23 +399,16 @@ public class JChart extends JComponent
 	}
 
 	/**
+	 * @param serie the index of the series
 	 * @param x the x-value in local screen coords
 	 * @param y the y-value in local screen coords
 	 * @return the index or -1 if not found
 	 */
-	public int getIndexAt(int x, int y)
+	public int getIndexAt(int serie, int x, int y)
 	{
 		double vx = screenXToValueX(x);
 		
-		for (int i=0; i<series.size(); i++)
-		{
-			int idx = FindIndexOfValueX(vx, i);
-			
-			if (idx != -1)
-				return idx;
-		}
-		
-		return -1;
+		return FindIndexOfValueX(vx, serie);
 	}
 	
 }

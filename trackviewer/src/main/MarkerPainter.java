@@ -35,6 +35,8 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 	{
 		if (index < 0 || index > track.size())
 			throw new IllegalArgumentException("Pos " + index + " not in track");
+
+		markers.clear();
 		
 		markers.add(index);
 		

@@ -36,6 +36,9 @@ public class MapViewer extends JComponent
 
 	private JXMapViewer mapViewer = new JXMapViewer();
 	
+	private List<RoutePainter> routePainters = new ArrayList<RoutePainter>();
+	private List<MarkerPainter> markerPainters = new ArrayList<MarkerPainter>();
+	
 	/**
 	 * Constructs a new instance
 	 */
@@ -80,6 +83,9 @@ public class MapViewer extends JComponent
 //		mapViewer.setZoom(10);
 //		mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
 
+		markerPainters.clear();
+		routePainters.clear();
+		
 		List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 		
 		int i = 0;
@@ -90,6 +96,9 @@ public class MapViewer extends JComponent
 
 			MarkerPainter markerPainter = new MarkerPainter(route, color);  
 			RoutePainter routePainter = new RoutePainter(route, color);
+			
+			markerPainters.add(markerPainter);
+			routePainters.add(routePainter);
 			
 			painters.add(routePainter);
 			painters.add(markerPainter);
@@ -106,17 +115,12 @@ public class MapViewer extends JComponent
 	}
 
 	/**
-	 * @param index
+	 * @param track the track index
+	 * @param index the index of the track point
 	 */
-	public void setMarker(int index)
+	public void setMarker(int track, int index)
 	{
-		for (Painter<?> p : painter.getPainters())
-		{
-			if (p instanceof MarkerPainter)
-			{
-				MarkerPainter mp = (MarkerPainter) p;
-				mp.setMarker(index);
-			}
-		}
+		MarkerPainter mp = markerPainters.get(track);
+		mp.setMarker(index);
 	}
 }

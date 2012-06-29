@@ -62,11 +62,14 @@ public class TrackChart extends JComponent
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				int idx = chart.getIndexAt(e.getX(), e.getY());
-
-				for (SelectionListener sl : selectionListeners)
+				for (int i = 0; i < chart.getData().size(); i++)
 				{
-					sl.selected(idx);
+					int idx = chart.getIndexAt(i, e.getX(), e.getY());
+
+					for (SelectionListener sl : selectionListeners)
+					{
+						sl.selected(i, idx);
+					}
 				}
 			}
 		});

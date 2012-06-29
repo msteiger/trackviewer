@@ -7,5 +7,5 @@ package main;
  */
 public interface SelectionListener
 {
-	public void selected(int index);
+	public void selected(int series, int index);
 }
