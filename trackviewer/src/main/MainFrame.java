@@ -138,6 +138,8 @@ public class MainFrame extends JFrame
 		// Set row sorter
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
 		table.setRowSorter(sorter);
+		sorter.toggleSortOrder(0);		// sorts ascending
+		sorter.toggleSortOrder(0);		// sorts descending
 
 		// Set selection model
 		table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -158,7 +160,7 @@ public class MainFrame extends JFrame
 				trackChart.setTracks(selTracks);
 			}
 		});
-		
+
 		return table;
 	}
 
