@@ -42,7 +42,6 @@ public class TcxAdapter
      *   <li>failure to locate a value for the context factory provider property</li>
      *   <li>mixing schema derived packages from different providers on the same contextPath</li>
      * </ol>
-
 	 */
 	public TcxAdapter() throws JAXBException
 	{
