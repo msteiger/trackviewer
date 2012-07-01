@@ -9,6 +9,8 @@ import java.awt.Insets;
 import java.awt.LinearGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
@@ -20,8 +22,10 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import main.ColorProvider;
+
 /**
- * TODO Type description
+ * Draws a line chart with multiple series 
  * @author Martin Steiger
  */
 public class JChart extends JComponent
@@ -35,7 +39,36 @@ public class JChart extends JComponent
 
 	private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
 	private final Rectangle chartRect  = new Rectangle();
+
+	private int markerPos;
 	
+	/**
+	 * 
+	 */
+	public JChart()
+	{
+		super();
+		
+		addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				setMarker(e.getX());
+			}
+		});
+	}
+
+	/**
+	 * @param pos the x position in screen pixel coordinates
+	 */
+	private void setMarker(int pos)
+	{
+		markerPos = pos;
+		
+		repaint();
+	}
+
 	@Override
 	protected void paintComponent(Graphics g)
 	{
@@ -53,10 +86,28 @@ public class JChart extends JComponent
 		{
 			drawSeries(s, (Graphics2D)g);
 		}
+
+		drawMarker(g);
 		
 		drawAxisX(g);
 		drawAxisY(g);
+	}
 
+	private void drawMarker(Graphics g)
+	{
+		if (markerPos < chartRect.x)
+			return;
+		
+		if (markerPos > chartRect.x + chartRect.width)
+			return;
+		
+		int overlap = 6;
+		int yTop = (int)chartRect.getMinY() - overlap;
+		int yBot = (int)chartRect.getMaxY() + overlap;
+	
+		// Draw right grid line
+		g.setColor(Color.BLACK);
+		g.drawLine(markerPos, yTop, markerPos, yBot);
 	}
 
 	private void updateChartRect()
@@ -305,20 +356,22 @@ public class JChart extends JComponent
 		return ratio;
 	}
 	
-	private void drawSeries(List<Point2D> series, Graphics2D g)
+	private void drawSeries(List<Point2D> serie, Graphics2D g)
 	{
-		if (series.isEmpty())
+		if (serie.isEmpty())
 			return;
 		
-		Point2D first = series.get(0);
+		Point2D first = serie.get(0);
 		Path2D path = new Path2D.Double();
 
 		double x = ValueXToScreenX(first.getX());
 		double y = ValueYToScreenY(first.getY());
 
-		path.moveTo(x, y);
+		// Start drawing vertical line from bottom to first point 
+		path.moveTo(x, chartRect.getMaxY());
+		path.lineTo(x, y);
 		
-		for (Point2D pt : series)
+		for (Point2D pt : serie)
 		{
 			x = ValueXToScreenX(pt.getX());
 			y = ValueYToScreenY(pt.getY());
@@ -326,14 +379,17 @@ public class JChart extends JComponent
 			path.lineTo(x, y);
 		}
 		
+		double lastX = x;
+		
+		// End drawing with a vertical line to bottom of last point 
+		path.lineTo(lastX, chartRect.getMaxY());
+
 		Path2D filled = new Path2D.Double(path);
 		
-		path.lineTo(chartRect.getMaxX(), chartRect.getMaxY());
-		path.lineTo(chartRect.getMinX(), chartRect.getMaxY());
-		
-		Color colorTop = new Color(128, 255, 212);
-		Color colorBottom = new Color(123, 104, 238);
-		Color colorLine = new Color(0, 0, 255);
+		int idx = series.indexOf(serie);
+		Color colorTop = ColorProvider.getTopColor(idx);
+		Color colorBottom = ColorProvider.getBottomColor(idx);
+		Color colorLine = ColorProvider.getMainColor(idx);
 		
 		Color[] colors = new Color[] { colorTop, colorBottom };
 		float[] fractions = { 0, 1 };

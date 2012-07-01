@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jdesktop.swingx.JXMapViewer;
@@ -30,14 +31,17 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 		this.track = track;
 		this.color = color;
 	}
+
+	public void clearMarkers()
+	{
+		markers.clear();
+	}
 	
-	public void setMarker(int index)
+	public void addMarker(int index)
 	{
 		if (index < 0 || index > track.size())
 			throw new IllegalArgumentException("Pos " + index + " not in track");
 
-		markers.clear();
-		
 		markers.add(index);
 		
 		setDirty(true);
@@ -69,13 +73,15 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 			GeoPosition gp = track.get(idx);
 			Point2D p = map.convertGeoPositionToPoint(gp);
 			Point2D dir = getDirection(idx, map);
-			
-			Point2D n = new Point2D.Double(dir.getY(), -dir.getX());
 
-			g.drawLine(
-					(int)(p.getX() - n.getX() * len), (int)(p.getY() - n.getY() * len), 
-					(int)(p.getX() + n.getX() * len), (int)(p.getY() + n.getY() * len));
-
+			if (dir != null)
+			{
+				Point2D n = new Point2D.Double(dir.getY(), -dir.getX());
+	
+				g.drawLine(
+						(int)(p.getX() - n.getX() * len), (int)(p.getY() - n.getY() * len), 
+						(int)(p.getX() + n.getX() * len), (int)(p.getY() + n.getY() * len));
+			}
 		}
 	}
 
@@ -89,7 +95,7 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 		
 		while (distSq < 50 && range < 20)
 		{
-			// compute direction from [-range..range] around index
+			// compute direction from [-ran^ge..range] around index
 			int lowBound = Math.max(index - range, 0);
 			int highBound = Math.min(index + range, track.size() - 1);
 
@@ -110,11 +116,20 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 				break;		// this is as good as it gets
 		}
 
-		if (Math.abs(distSq) < 1.0)
+		if (Math.abs(distSq) < 0.01)
 			return null;
 
 		double dist = Math.sqrt(distSq);
 		
 		return new Point2D.Double(dx / dist, dy/ dist);
+	}
+
+	/**
+	 * Return the list of route positions as unmodifiable list
+	 * @return the route
+	 */
+	public List<GeoPosition> getRoute()
+	{
+		return Collections.unmodifiableList(track);
 	}
 }

@@ -92,7 +92,7 @@ public class MapViewer extends JComponent
 		for (Track track : tracks)
 		{
 			List<GeoPosition> route = track.getRoute();
-			Color color = getRouteColor(i++);
+			Color color = ColorProvider.getMainColor(i++);
 
 			MarkerPainter markerPainter = new MarkerPainter(route, color);  
 			RoutePainter routePainter = new RoutePainter(route, color);
@@ -100,18 +100,15 @@ public class MapViewer extends JComponent
 			markerPainters.add(markerPainter);
 			routePainters.add(routePainter);
 			
+			markerPainter.addMarker(0);
+			markerPainter.addMarker(route.size() - 1);
+
 			painters.add(routePainter);
 			painters.add(markerPainter);
 		}
 		
 		painter.setPainters(painters);
 
-	}
-
-	private Color getRouteColor(int i)
-	{
-		Color colors[] = { Color.RED, Color.BLUE, Color.LIGHT_GRAY, Color.YELLOW, Color.CYAN };
-		return colors[i % colors.length];
 	}
 
 	/**
@@ -121,6 +118,17 @@ public class MapViewer extends JComponent
 	public void setMarker(int track, int index)
 	{
 		MarkerPainter mp = markerPainters.get(track);
-		mp.setMarker(index);
+
+		int minIdx = 0;
+		int maxIdx = mp.getRoute().size() - 1;
+
+		mp.clearMarkers();
+		mp.addMarker(minIdx);
+		mp.addMarker(maxIdx);
+		
+		if (index > minIdx && index < maxIdx)
+		{
+			mp.addMarker(index);
+		}
 	}
 }
