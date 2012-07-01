@@ -16,9 +16,9 @@ public final class TrackTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
-	private final String[] columnIds = { "date", "distance", "time", "speed" };
-	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Average Speed (km/h)"};
-	private final Class<?>[] columnClass = { Date.class, Double.class, Date.class, Double.class };
+	private final String[] columnIds = { "date", "distance", "time", "speed", "altitude" };
+	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Average Speed (km/h)", "Altitude Diff. (m)"};
+	private final Class<?>[] columnClass = { Date.class, Double.class, Date.class, Double.class, Double.class };
 
 	/**
 	 * @param tracks the list of tracks
@@ -78,6 +78,9 @@ public final class TrackTableModel extends AbstractTableModel
 			
 		case 3:
 			return track.getAverageSpeed();
+			
+		case 4:
+			return track.getTotalElevationDifference();
 		}
 		
 		return track;

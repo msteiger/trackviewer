@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,11 +127,13 @@ public class MainFrame extends JFrame
 		FormatRenderer distanceRenderer = new FormatRenderer(new DistanceFormat());
 		FormatRenderer timeRenderer = new FormatRenderer(new TimeFormat());
 		FormatRenderer speedRenderer = new FormatRenderer(new SpeedFormat());
+		FormatRenderer altiRenderer = new FormatRenderer(new DecimalFormat("# m"));
 		
 		table.getColumn("date").setCellRenderer(dateRenderer);
 		table.getColumn("distance").setCellRenderer(distanceRenderer);
 		table.getColumn("time").setCellRenderer(timeRenderer);
 		table.getColumn("speed").setCellRenderer(speedRenderer);
+		table.getColumn("altitude").setCellRenderer(altiRenderer);
 
 		// Set row sorter
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());

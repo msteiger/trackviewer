@@ -36,6 +36,7 @@ public class Track
 
 	private String name;
 	private Date startTime;
+	private Double altDiff;
 
 	/**
 	 * Default constructor (no name set)
@@ -119,6 +120,33 @@ public class Track
 	public Date getStartTime()
 	{
 		return startTime; 
+	}
+	
+	public double getTotalElevationDifference()
+	{
+		if (points.isEmpty())
+			return 0;
+
+		if (altDiff == null)
+		{
+			double total = 0;
+			
+			double prevEle = points.get(0).getElevation(); 
+			
+			for (TrackPoint pt : points)
+			{
+				double ele = pt.getElevation();
+				double delta = ele - prevEle;
+				
+				total += Math.abs(delta);
+				
+				prevEle = ele;
+			}
+			
+			altDiff = total * 0.5;		// 50% up, 50% down
+		}
+		
+		return altDiff;
 	}
 	
 	/**
