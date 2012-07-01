@@ -6,13 +6,11 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -21,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -29,9 +26,10 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import javax.xml.bind.JAXBException;
 
 import main.table.DistanceFormat;
 import main.table.FormatRenderer;
@@ -39,7 +37,6 @@ import main.table.JShadedTable;
 import main.table.SpeedFormat;
 import main.table.TimeFormat;
 import main.table.TrackTableModel;
-import tcx.TcxAdapter;
 import track.Track;
 
 /**
@@ -62,11 +59,29 @@ public class MainFrame extends JFrame
 		
 		File folder = new File(System.getProperty("user.home") + File.separator + "trackviewer");
 
-		List<Track> tracks = readTracks(folder);
+		final List<Track> tracks = new CopyOnWriteArrayList<Track>();
 
 		viewer = new MapViewer();
 
 		table = createTable(tracks);
+		
+		TrackLoader.readTracks(folder, new TrackLoadListener()
+		{
+			@Override
+			public void trackLoaded(Track track)
+			{
+				tracks.add(track);
+
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						((AbstractTableModel)table.getModel()).fireTableDataChanged();
+					}
+				});
+			}
+		});
 
 		// put in a scrollpane to add scroll bars
 		JScrollPane tablePane = new JScrollPane(table);
@@ -99,7 +114,7 @@ public class MainFrame extends JFrame
 		add(createMenu(), BorderLayout.NORTH);
 		add(mainSplitPane);
 		
-		table.getSelectionModel().setSelectionInterval(0, 0);
+//		table.getSelectionModel().setSelectionInterval(0, 0);
 	}
 
 	
@@ -162,78 +177,6 @@ public class MainFrame extends JFrame
 		});
 
 		return table;
-	}
-
-	private List<Track> readTracks(File folder)
-	{
-		List<Track> tracks = new ArrayList<Track>();
-
-		String[] files = folder.list(new FilenameFilter()
-		{
-			@Override
-			public boolean accept(File dir, String name)
-			{
-				return name.endsWith(".tcx");
-			}
-		});
-
-		TcxAdapter tcxAdapter = null;
-		
-		try
-		{
-			tcxAdapter = new TcxAdapter();
-		}
-		catch (JAXBException e)
-		{
-			JOptionPane.showMessageDialog(null, e);
-//			log.error("Error initializing TcxAdapter", e);
-			return tracks;
-		}
-
-		for (String fname : files)
-		{
-			FileInputStream fis = null;
-
-			try
-			{
-				fis = new FileInputStream(new File(folder, fname));
-				List<Track> read = tcxAdapter.read(fis);
-				
-				for (Track t : read)
-				{
-					// skip empty tracks
-					if (!t.getPoints().isEmpty())
-					{
-						tracks.add(t);
-					}
-				}
-				
-				System.out.println("Loaded " + fname);
-			}
-			catch (IOException e)
-			{
-				JOptionPane.showMessageDialog(null, e);
-			}
-			finally
-			{
-				try
-				{
-					if (fis != null)
-						fis.close();
-				}
-				catch (Exception e)
-				{
-					// ignore
-				}
-			}
-		}
-		
-		for (Track track : tracks)
-		{
-			TrackComputer.repairTrackData(track);
-		}
-		
-		return tracks;
 	}
 
 	private JMenuBar createMenu()
