@@ -4,14 +4,18 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
@@ -111,7 +115,7 @@ public class MainFrame extends JFrame
 		tablePane.setMinimumSize(minimumSize);
 		chartSplitPane.setMinimumSize(minimumSize);
 		
-		add(createMenu(), BorderLayout.NORTH);
+		add(createMenu(tracks), BorderLayout.NORTH);
 		add(mainSplitPane);
 		
 //		table.getSelectionModel().setSelectionInterval(0, 0);
@@ -179,38 +183,21 @@ public class MainFrame extends JFrame
 		return table;
 	}
 
-	private JMenuBar createMenu()
+	private JMenuBar createMenu(List<Track> tracks)
 	{
 		//Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
 
 		//Build the first menu.
-		JMenu menu = new JMenu("A Menu");
-		menu.setMnemonic(KeyEvent.VK_A);
-		menu.getAccessibleContext().setAccessibleDescription(
-		        "The only menu in this program that has menu items");
+		JMenu menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(menu);
 
-		//a group of JMenuItems
-		JMenuItem menuItem = new JMenuItem("A text-only menu item",
-		                         KeyEvent.VK_T);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-		        KeyEvent.VK_1, ActionEvent.ALT_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-		        "This doesn't really do anything");
-		menu.add(menuItem);
-
-		menuItem = new JMenuItem("Both text and icon",
-		                         new ImageIcon("images/middle.gif"));
-		menuItem.setMnemonic(KeyEvent.VK_B);
-		menu.add(menuItem);
-
-		menuItem = new JMenuItem(new ImageIcon("images/middle.gif"));
-		menuItem.setMnemonic(KeyEvent.VK_D);
-		menu.add(menuItem);
+		menu.add(exportTrackItem(tracks));
+		menu.addSeparator();
+		menu.add(fixElevationItem(tracks));
 
 		//a group of radio button menu items
-		menu.addSeparator();
 		ButtonGroup group = new ButtonGroup();
 		JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
 		rbMenuItem.setSelected(true);
@@ -233,20 +220,6 @@ public class MainFrame extends JFrame
 		cbMenuItem.setMnemonic(KeyEvent.VK_H);
 		menu.add(cbMenuItem);
 
-		//a submenu
-		menu.addSeparator();
-		JMenu submenu = new JMenu("A submenu");
-		submenu.setMnemonic(KeyEvent.VK_S);
-
-		menuItem = new JMenuItem("An item in the submenu");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-		        KeyEvent.VK_2, ActionEvent.ALT_MASK));
-		submenu.add(menuItem);
-
-		menuItem = new JMenuItem("Another item");
-		submenu.add(menuItem);
-		menu.add(submenu);
-
 		//Build second menu in the menu bar.
 		menu = new JMenu("Another Menu");
 		menu.setMnemonic(KeyEvent.VK_N);
@@ -257,6 +230,67 @@ public class MainFrame extends JFrame
 		return menuBar;
 	}
 	
+	private JMenuItem exportTrackItem(final List<Track> tracks)
+	{
+		JMenuItem menuItem = new JMenuItem(new AbstractAction()
+		{
+			private static final long serialVersionUID = -3691668348789171952L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int idx = table.getSelectedRow();
+				idx = table.convertRowIndexToModel(idx);
+
+				exportToFile(tracks.get(idx));
+			}
+		});
+
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK));
+		menuItem.setText("Export data");
+		menuItem.setMnemonic(KeyEvent.VK_E);
+	
+		return menuItem;
+	}
+
+	private void exportToFile(Track track)
+	{
+//		JDialog ...		
+		try
+		{
+			TrackLoader.save("E:\\fixed.gpx", track);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private JMenuItem fixElevationItem(final List<Track> tracks)
+	{
+		//a group of JMenuItems
+		JMenuItem menuItem = new JMenuItem(new AbstractAction()
+		{
+			private static final long serialVersionUID = -3691668348789171952L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int idx = table.getSelectedRow();
+				idx = table.convertRowIndexToModel(idx);
+
+				ElevationFixer.fixTrack(tracks.get(idx));
+			}
+		});
+
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+		menuItem.setText("Fix Elevantion");
+		menuItem.setMnemonic(KeyEvent.VK_E);
+	
+		return menuItem;
+	}
+
+
 	/**
 	 * @param args the program args (ignored)
 	 */
