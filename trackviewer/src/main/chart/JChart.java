@@ -135,6 +135,10 @@ public class JChart extends JComponent
 
 		double val = boundLow.getY();
 		double range = boundHigh.getY() - boundLow.getY();
+
+		if (range <= 0.0)
+			return;
+
 		double multi = findMultiplier(chartRect.getHeight(), range, 40.0);
 
 		FontMetrics fm = g.getFontMetrics();
@@ -171,9 +175,13 @@ public class JChart extends JComponent
         final int overlap = 3;
 
 		double range = boundHigh.getX() - boundLow.getX();
+
+		if (range <= 0.0)
+			return;
+
 		double multi = findMultiplier(chartRect.getWidth(), range, 40.0);
 		double val = boundLow.getX();
-
+		
 		DecimalFormat df = new DecimalFormat("#.##");
 
 		int yTop = (int)chartRect.getMinY() - overlap;
