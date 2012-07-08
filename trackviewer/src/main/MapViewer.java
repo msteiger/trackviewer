@@ -44,16 +44,17 @@ public class MapViewer extends JComponent
 	 */
 	public MapViewer()
 	{
-		// Setup local file cache
-		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
-		LocalResponseCache.installResponseCache(cacheDir, false);
-
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 		tileFactory.setThreadPoolSize(8);
 		mapViewer.setTileFactory(tileFactory);
-	
+
+		// Setup local file cache
+		String baseURL = info.getBaseURL();
+		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
+		LocalResponseCache.installResponseCache(baseURL, cacheDir, false);
+
 		// Add interactions
 		MouseInputListener mia = new PanMouseInputListener(mapViewer);
 		mapViewer.addMouseListener(mia);

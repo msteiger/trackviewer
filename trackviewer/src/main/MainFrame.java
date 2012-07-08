@@ -4,7 +4,6 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -15,9 +14,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -42,6 +39,7 @@ import main.table.SpeedFormat;
 import main.table.TimeFormat;
 import main.table.TrackTableModel;
 import track.Track;
+import webservice.TrackElevationFixer;
 
 /**
  * A simple sample application that shows a OSM map of Europe
@@ -279,7 +277,7 @@ public class MainFrame extends JFrame
 				int idx = table.getSelectedRow();
 				idx = table.convertRowIndexToModel(idx);
 
-				ElevationFixer.fixTrack(tracks.get(idx));
+				TrackElevationFixer.fixTrack(tracks.get(idx));
 			}
 		});
 

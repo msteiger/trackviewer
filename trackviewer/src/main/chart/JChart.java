@@ -24,6 +24,8 @@ import javax.swing.JComponent;
 
 import main.ColorProvider;
 
+
+
 /**
  * Draws a line chart with multiple series 
  * @author Martin Steiger

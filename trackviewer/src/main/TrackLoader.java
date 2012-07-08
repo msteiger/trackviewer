@@ -5,7 +5,6 @@ import gpx.GpxAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -18,6 +17,8 @@ import javax.xml.bind.JAXBException;
 
 import tcx.TcxAdapter;
 import track.Track;
+
+import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
 
 /**
  * Loads a series of track files from a folder
@@ -71,7 +72,8 @@ public class TrackLoader
 			try
 			{
 				fis = new FileInputStream(new File(folder, fname));
-				List<Track> read = tcxAdapter.read(fis);
+				TrainingCenterDatabaseT data = tcxAdapter.unmarshallObject(fis);
+				List<Track> read = tcxAdapter.convertToTracks(data);
 				
 				for (Track t : read)
 				{
@@ -85,7 +87,7 @@ public class TrackLoader
 				
 				System.out.println("Loaded " + fname);
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				JOptionPane.showMessageDialog(null, e);
 			}

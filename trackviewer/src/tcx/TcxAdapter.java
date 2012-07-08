@@ -1,8 +1,8 @@
 
 package tcx;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -10,6 +10,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
@@ -19,8 +20,7 @@ import track.TrackPoint;
 
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.ActivityLapT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.ActivityT;
-import com.garmin.xmlschemas.trainingcenterdatabase.v2.CourseListT;
-import com.garmin.xmlschemas.trainingcenterdatabase.v2.CourseT;
+import com.garmin.xmlschemas.trainingcenterdatabase.v2.ObjectFactory;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.PositionT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackpointT;
@@ -50,32 +50,8 @@ public class TcxAdapter
 		context = JAXBContext.newInstance(packageName);
 	}
 
-	/**
-	 * @param is the input stream
-	 * @return the track data
-	 * @throws IOException if the data cannot be read
-	 */
-	public List<Track> read(InputStream is) throws IOException
+	public List<Track> convertToTracks(TrainingCenterDatabaseT tcx)
 	{
-		TrainingCenterDatabaseT tcx;
-		try
-		{
-			tcx = unmarshallObject(is);
-		}
-		catch (JAXBException e)
-		{
-			throw new IOException("Error parsing inputstream", e);
-		}
-
-		CourseListT courses = tcx.getCourses();
-		if (courses != null)
-		{			System.out.println("Courses:");
-		for (CourseT course : courses.getCourse())
-		{
-			System.out.println(course);
-		}
-		}
-		
 		ArrayList<Track> list = new ArrayList<Track>();
 
 		for (ActivityT activity : tcx.getActivities().getActivity())
@@ -112,7 +88,12 @@ public class TcxAdapter
 		return list;
 	}
 
-	private TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException
+	/**
+	 * @param is the input stream
+	 * @return the track data
+	 * @throws JAXBException if the data cannot be read
+	 */
+	public TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException
 	{
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 
@@ -121,4 +102,20 @@ public class TcxAdapter
 
 		return jaxbObject.getValue();
 	}
+	
+	/**
+	 * @param os the output stream
+	 * @param value the value to be written
+	 * @throws JAXBException if the data cannot be written
+	 */
+	public void marshallObject(OutputStream os, TrainingCenterDatabaseT value) throws JAXBException
+	{
+		ObjectFactory of = new ObjectFactory();
+
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+		marshaller.marshal(of.createTrainingCenterDatabase(value), os);
+	}	
+	
 }
