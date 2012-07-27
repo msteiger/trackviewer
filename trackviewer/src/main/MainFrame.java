@@ -194,7 +194,8 @@ public class MainFrame extends JFrame
 		menu.add(exportTrackItem(tracks));
 		menu.addSeparator();
 		menu.add(fixElevationItem(tracks));
-
+		menu.add(insertGapsItem(tracks));
+		
 		//a group of radio button menu items
 		ButtonGroup group = new ButtonGroup();
 		JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
@@ -288,6 +289,34 @@ public class MainFrame extends JFrame
 		return menuItem;
 	}
 
+	private JMenuItem insertGapsItem(final List<Track> tracks)
+	{
+		//a group of JMenuItems
+		JMenuItem menuItem = new JMenuItem(new AbstractAction()
+		{
+			private static final long serialVersionUID = -3691668348789171952L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int[] idx = table.getSelectedRows();
+				
+				if (idx.length != 2)
+					return;
+				
+				int idx1 = table.convertRowIndexToModel(idx[0]);
+				int idx2 = table.convertRowIndexToModel(idx[1]);
+
+				GapInserter.insertGaps(tracks.get(idx1), tracks.get(idx2));
+			}
+		});
+
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+		menuItem.setText("Insert Gaps");
+		menuItem.setMnemonic(KeyEvent.VK_G);
+	
+		return menuItem;
+	}
 
 	/**
 	 * @param args the program args (ignored)

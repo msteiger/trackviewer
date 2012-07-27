@@ -12,7 +12,8 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 public class TrackPoint
 {
 	private final GeoPosition pos;
-	private final Date time;
+	
+	private Date time;
 
 	private double elevation;
 	private double distance;
@@ -90,6 +91,14 @@ public class TrackPoint
 	public void setDistance(double distance)
 	{
 		this.distance = distance;
+	}
+
+	/**
+	 * @param time the new time
+	 */
+	public void setTime(Date time)
+	{
+		this.time = time;
 	}
 
 }
