@@ -62,6 +62,8 @@ public class TrackChart extends JComponent
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
+				chart.setMarker(e.getX());
+
 				for (int i = 0; i < chart.getData().size(); i++)
 				{
 					int idx = chart.getIndexAt(i, e.getX(), e.getY());
@@ -164,12 +166,18 @@ public class TrackChart extends JComponent
 		reload();
 	}
 	
+	/**
+	 * @param sl the selection listener
+	 */
 	public void addSelectionListener(SelectionListener sl)
 	{
 		selectionListeners.add(sl);
 	}
 	
 	
+	/**
+	 * @param sl the selection listener
+	 */
 	public void removeSelectionListener(SelectionListener sl)
 	{
 		selectionListeners.remove(sl);

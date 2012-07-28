@@ -9,11 +9,8 @@ import java.awt.Insets;
 import java.awt.LinearGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -34,15 +31,15 @@ public class JChart extends JComponent
 {
 	private static final long serialVersionUID = -7082516791435983958L;
 
-	private Double boundHigh;
-	private Double boundLow;
+	private Point2D boundHigh;
+	private Point2D boundLow;
 	private String horzDesc;
 	private String vertDesc;
 
 	private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
 	private final Rectangle chartRect  = new Rectangle();
 
-	private int markerPos;
+	private Double markerPos;
 	
 	/**
 	 * 
@@ -50,23 +47,22 @@ public class JChart extends JComponent
 	public JChart()
 	{
 		super();
-		
-		addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				setMarker(e.getX());
-			}
-		});
 	}
 
 	/**
 	 * @param pos the x position in screen pixel coordinates
 	 */
-	private void setMarker(int pos)
+	public void setMarker(int pos)
 	{
-		markerPos = pos;
+		markerPos = null;
+		
+		if (pos < chartRect.x)
+			return;
+		
+		if (pos > chartRect.x + chartRect.width)
+			return;
+
+		markerPos = Double.valueOf(screenXToValueX(pos));
 		
 		repaint();
 	}
@@ -97,10 +93,7 @@ public class JChart extends JComponent
 
 	private void drawMarker(Graphics g)
 	{
-		if (markerPos < chartRect.x)
-			return;
-		
-		if (markerPos > chartRect.x + chartRect.width)
+		if (markerPos == null)
 			return;
 		
 		int overlap = 6;
@@ -109,7 +102,10 @@ public class JChart extends JComponent
 	
 		// Draw right grid line
 		g.setColor(Color.BLACK);
-		g.drawLine(markerPos, yTop, markerPos, yBot);
+		
+		int x = (int)ValueXToScreenX(markerPos);
+		
+		g.drawLine(x, yTop, x, yBot);
 	}
 
 	private void updateChartRect()
