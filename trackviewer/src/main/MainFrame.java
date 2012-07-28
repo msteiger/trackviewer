@@ -32,6 +32,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import main.chart.StatusBar;
 import main.table.DistanceFormat;
 import main.table.FormatRenderer;
 import main.table.JShadedTable;
@@ -50,6 +51,7 @@ public class MainFrame extends JFrame
 	private static final long serialVersionUID = -9215006987029836062L;
 	private MapViewer viewer;
 	private JTable table;
+	private StatusBar statusBar;
 	private TrackChart trackChart;
 
 	/**
@@ -99,6 +101,9 @@ public class MainFrame extends JFrame
 				viewer.setMarker(series, index);
 			}
 		});
+		
+		statusBar = new StatusBar();
+		add(statusBar, BorderLayout.SOUTH);
 				
 		//Create the main split pane 
 		JSplitPane chartSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewer, trackChart);
