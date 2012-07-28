@@ -57,16 +57,27 @@ public class TrackChart extends JComponent
 	{
 		chart = new JChart();
 		
-		chart.addMouseListener(new MouseAdapter()
+		MouseAdapter ma = new MouseAdapter()
 		{
 			@Override
-			public void mouseClicked(MouseEvent e)
+			public void mousePressed(MouseEvent e)
 			{
-				chart.setMarker(e.getX());
+				select(e.getX());
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e)
+			{
+				select(e.getX());
+			}
+			
+			private void select(int x)
+			{
+				chart.setMarker(x);
 
 				for (int i = 0; i < chart.getData().size(); i++)
 				{
-					int idx = chart.getIndexAt(i, e.getX(), e.getY());
+					int idx = chart.getIndexAt(i, x);
 
 					for (SelectionListener sl : selectionListeners)
 					{
@@ -74,7 +85,10 @@ public class TrackChart extends JComponent
 					}
 				}
 			}
-		});
+		};
+		
+		chart.addMouseListener(ma);
+		chart.addMouseMotionListener(ma);
 		
 		//Create the toolbar.
 	    JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);

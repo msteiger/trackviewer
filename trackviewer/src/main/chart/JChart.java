@@ -463,10 +463,9 @@ public class JChart extends JComponent
 	/**
 	 * @param serie the index of the series
 	 * @param x the x-value in local screen coords
-	 * @param y the y-value in local screen coords
 	 * @return the index or -1 if not found
 	 */
-	public int getIndexAt(int serie, int x, int y)
+	public int getIndexAt(int serie, int x)
 	{
 		double vx = screenXToValueX(x);
 		
