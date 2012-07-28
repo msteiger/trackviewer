@@ -39,7 +39,7 @@ public class JChart extends JComponent
 	private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
 	private final Rectangle chartRect  = new Rectangle();
 
-	private Double markerPos;
+	private Integer markerPos;
 	
 	/**
 	 * 
@@ -62,8 +62,10 @@ public class JChart extends JComponent
 		if (pos > chartRect.x + chartRect.width)
 			return;
 
-		markerPos = Double.valueOf(screenXToValueX(pos));
+		double val = screenXToValueX(pos);
 		
+		markerPos = FindIndexOfValueX(val, 0);  
+
 		repaint();
 	}
 
@@ -103,7 +105,9 @@ public class JChart extends JComponent
 		// Draw right grid line
 		g.setColor(Color.BLACK);
 		
-		int x = (int)ValueXToScreenX(markerPos);
+		double value = series.get(0).get(markerPos).getX();
+		
+		int x = (int)ValueXToScreenX(value);
 		
 		g.drawLine(x, yTop, x, yBot);
 	}
