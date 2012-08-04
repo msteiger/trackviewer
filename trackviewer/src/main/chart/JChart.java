@@ -98,18 +98,24 @@ public class JChart extends JComponent
 		if (markerPos == null)
 			return;
 		
+		// Draw selection marker line
+
 		int overlap = 6;
 		int yTop = (int)chartRect.getMinY() - overlap;
 		int yBot = (int)chartRect.getMaxY() + overlap;
 	
-		// Draw right grid line
 		g.setColor(Color.BLACK);
 		
-		double value = series.get(0).get(markerPos).getX();
-		
-		int x = (int)ValueXToScreenX(value);
-		
-		g.drawLine(x, yTop, x, yBot);
+		List<Point2D> data = series.get(0);
+
+		// If the series has changed, the marker could be invalid
+		if (markerPos < data.size())
+		{
+			double value = data.get(markerPos).getX();
+			int x = (int)ValueXToScreenX(value);
+			
+			g.drawLine(x, yTop, x, yBot);
+		}
 	}
 
 	private void updateChartRect()
