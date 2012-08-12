@@ -35,6 +35,7 @@ public class Track
 	};
 
 	private String name;
+	private String comments;
 	private Date startTime;
 	private Double altDiff;
 
@@ -167,4 +168,21 @@ public class Track
 	{
 		return points.get(points.size() - 1).getTime();
 	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments()
+	{
+		return comments;
+	}
+
+	/**
+	 * @param comments the comments to set
+	 */
+	public void setComments(String comments)
+	{
+		this.comments = comments;
+	}
+	
 }

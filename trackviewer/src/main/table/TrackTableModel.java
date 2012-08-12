@@ -16,9 +16,9 @@ public final class TrackTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
-	private final String[] columnIds = { "date", "distance", "time", "speed", "altitude" };
-	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Average Speed (km/h)", "Altitude Diff. (m)"};
-	private final Class<?>[] columnClass = { Date.class, Double.class, Date.class, Double.class, Double.class };
+	private final String[] columnIds = { "date", "distance", "time", "speed", "altitude", "comments" };
+	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Average Speed (km/h)", "Altitude Diff. (m)", "Comments"};
+	private final Class<?>[] columnClass = { Date.class, Double.class, Date.class, Double.class, Double.class, String.class };
 
 	/**
 	 * @param tracks the list of tracks
@@ -81,6 +81,9 @@ public final class TrackTableModel extends AbstractTableModel
 			
 		case 4:
 			return track.getTotalElevationDifference();
+			
+		case 5:
+			return track.getComments();
 		}
 		
 		return track;
@@ -89,12 +92,22 @@ public final class TrackTableModel extends AbstractTableModel
 	@Override
 	public boolean isCellEditable(int row, int col)
 	{
-		return false;
+		return "comments".equals(columnIds[col]);
 	}
 
 	@Override
 	public void setValueAt(Object value, int row, int col)
 	{
-//		fireTableCellUpdated(row, col);
+		Track track = tracks.get(row);
+
+		switch (col)
+		{
+		case 5:
+			track.setComments(String.valueOf(value));
+			break;
+		}
+
+		fireTableCellUpdated(row, col);
 	}
 }
+
