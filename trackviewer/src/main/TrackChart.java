@@ -119,6 +119,7 @@ public class TrackChart extends JComponent
 		heightButton.getModel().setSelected(chartModeVert == ChartModeVert.Height);
 		speedButton.getModel().setSelected(chartModeVert == ChartModeVert.Speed);
 		
+		toolBar.addSeparator();
 	    toolBar.add(distanceButton);
 		toolBar.add(timeButton);
 		toolBar.addSeparator();
