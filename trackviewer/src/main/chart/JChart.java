@@ -64,7 +64,7 @@ public class JChart extends JComponent
 
 		double val = screenXToValueX(pos);
 		
-		markerPos = FindIndexOfValueX(val, 0);  
+		markerPos = findIndexOfValueX(val, 0);  
 
 		repaint();
 	}
@@ -455,7 +455,7 @@ public class JChart extends JComponent
 		horzDesc = text;
 	}
 
-	private int FindIndexOfValueX(double val, int serie)
+	private int findIndexOfValueX(double val, int serie)
 	{
 		int result = -1;
 		
@@ -467,7 +467,7 @@ public class JChart extends JComponent
 			result++;
 		}
 
-		return -1;
+		return result;
 	}
 
 	/**
@@ -479,7 +479,7 @@ public class JChart extends JComponent
 	{
 		double vx = screenXToValueX(x);
 		
-		return FindIndexOfValueX(vx, serie);
+		return findIndexOfValueX(vx, serie);
 	}
 	
 }
