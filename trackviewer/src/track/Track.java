@@ -123,6 +123,9 @@ public class Track
 		return startTime; 
 	}
 	
+	/**
+	 * @return the accumulated (ascending) elevation difference
+	 */
 	public double getTotalElevationDifference()
 	{
 		if (points.isEmpty())
@@ -139,12 +142,13 @@ public class Track
 				double ele = pt.getElevation();
 				double delta = ele - prevEle;
 				
-				total += Math.abs(delta);
+				if (delta > 0)
+					total += delta; 
 				
 				prevEle = ele;
 			}
 			
-			altDiff = total * 0.5;		// 50% up, 50% down
+			altDiff = total;
 		}
 		
 		return altDiff;
