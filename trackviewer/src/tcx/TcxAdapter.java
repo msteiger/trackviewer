@@ -27,7 +27,7 @@ import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackpointT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
 
 /**
- * Reads track data from .gpx files
+ * Reads track data from .tcx files
  * @author Martin Steiger
  */
 public class TcxAdapter
@@ -50,6 +50,10 @@ public class TcxAdapter
 		context = JAXBContext.newInstance(packageName);
 	}
 
+	/**
+	 * @param tcx the tcx raw data
+	 * @return the extracted track data
+	 */
 	public List<Track> convertToTracks(TrainingCenterDatabaseT tcx)
 	{
 		ArrayList<Track> list = new ArrayList<Track>();
@@ -71,10 +75,16 @@ public class TcxAdapter
 						{
 							double lat = pos.getLatitudeDegrees();
 							double lon = pos.getLongitudeDegrees();
-							double ele = pt.getAltitudeMeters();
+							Double ele = pt.getAltitudeMeters();
 							GregorianCalendar time = pt.getTime().toGregorianCalendar();
 							GeoPosition gp = new GeoPosition(lat, lon);
 							TrackPoint tp = new TrackPoint(gp, time.getTime());
+							
+							if (ele == null)
+							{
+								ele = Double.NaN;
+							}
+							
 							tp.setElevation(ele);
 							track.addPoint(tp);
 						}
