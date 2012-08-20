@@ -8,8 +8,6 @@ import java.util.Date;
 
 /**
  * Formats Date values as time string
- * TODO: implement parseObject
- * TODO: fix value where min or sec is only one digit long
  * @author Martin Steiger
  */
 public class TimeFormat extends Format
@@ -25,14 +23,17 @@ public class TimeFormat extends Format
 		long hrs = (totSecs / 3600) % 60;
 		
 		if (hrs > 0)
-			toAppendTo.append(hrs + ":");
-		
-		if (hrs > 0 || min > 0)
 		{
-			toAppendTo.append(String.format("%02d:", min));
+			toAppendTo.append(String.format("%d:%02d:%02d", hrs, min, sec));
 		}
-		
-		toAppendTo.append(String.format("%02d", sec));
+		else if (min > 0)
+		{
+			toAppendTo.append(String.format("%d:%02d", min, sec));
+		}
+		else
+		{
+			toAppendTo.append(String.format("%d", sec));
+		}
 		
 		return toAppendTo;
 	}
@@ -40,6 +41,8 @@ public class TimeFormat extends Format
 	@Override
 	public Object parseObject(String source, ParsePosition pos)
 	{
+		// not necessary
+		
 		return null;
 	}
 
