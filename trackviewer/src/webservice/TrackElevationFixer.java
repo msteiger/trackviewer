@@ -24,7 +24,7 @@ public class TrackElevationFixer
 		List<Double> elevations;
 		try
 		{
-			elevations = ElevationFixer.getElevationsComp(track.getRoute());
+			elevations = ElevationFixer.getElevations(track.getRoute());
 			List<TrackPoint> points = track.getPoints();
 
 			for (int i = 0; i < points.size(); i++) 

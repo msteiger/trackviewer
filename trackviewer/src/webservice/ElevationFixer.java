@@ -28,29 +28,17 @@ public class ElevationFixer
 	private static final String url = "http://open.mapquestapi.com/elevation/v1/profile?useFilter=true";
 	
 	/**
-	 * Retrieves a list of elevations from a web service with plain lat/lon kvp. 
-	 * @param route the route
-	 * @return the list of elevations
-	 * @throws IOException if something goes wrong
+	 * The compressed version does not work atm (bug @ mapquest)
 	 */
-	public static List<Double> getElevationsRaw(List<GeoPosition> route) throws IOException
-	{
-		String s = "&shapeFormat=raw&latLngCollection=";
-		
-		// TODO: add splitting up in chunks here 
-		// or use the code from the compressed version in both versions
-		
-		for (GeoPosition pos : route)
-		{
-			s = s + pos.getLatitude();
-			s = s + ",";
-			s = s + pos.getLongitude();
-			s = s + ",";
-		}
-		
-		return queryElevations(s);
-	}
-	
+	private static final boolean useCompression = false;
+
+	/**
+	 * This is just a guess that seems to work for MapQuest Elevation API v1
+	 *  200 seems to be ok for raw
+	 * 1500 seems to be ok for compressed
+	 */
+	private static final int chunkSize = 200;
+
 	/**
 	 * Retrieves a list of elevations from a web service using 
 	 * google polyline compression URLs.
@@ -58,12 +46,8 @@ public class ElevationFixer
 	 * @return the list of elevations
 	 * @throws IOException if something goes wrong
 	 */
-	public static List<Double> getElevationsComp(List<GeoPosition> routeFull) throws IOException
+	public static List<Double> getElevations(List<GeoPosition> routeFull) throws IOException
 	{
-		final String s = "&shapeFormat=cmp&latLngCollection=";
-		
-		final int chunkSize = 1500;	// this is just a guess that seems to work for MapQuest Elevation API v1
-		
 		int min = 0;
 		int max = Math.min(routeFull.size(), min + chunkSize);
 		
@@ -71,12 +55,18 @@ public class ElevationFixer
 		
 		while (min < max)
 		{
+			System.out.println("Converting [" + min + ".." + max + "]");
+			
 			List<GeoPosition> route = routeFull.subList(min, max);
 
-			String compressed = PolylineEncoder.compress(route, 5);
-		
-			List<Double> result = queryElevations(s + compressed);
+			String query;
 			
+			if (useCompression)
+				query = getCompressedQuery(route); else
+				query = getRawQuery(route);
+		
+			List<Double> result = queryElevations(query); 
+					
 			if (result.size() != max - min)
 			{
 				throw new IllegalStateException("Elevation query returned only " + result.size() + " instead of " + (max - min) + " points");
@@ -91,7 +81,31 @@ public class ElevationFixer
 		return ele;
 	}
 	
+	private static String getCompressedQuery(List<GeoPosition> route)
+	{
+		final String s = "&shapeFormat=cmp&latLngCollection=";
+
+		String compressed = PolylineEncoder.compress(route, 5);
+
+		return s + compressed;
+	}
 	
+	private static String getRawQuery(List<GeoPosition> route)
+	{
+		String s = "&shapeFormat=raw&latLngCollection=";
+		
+		for (GeoPosition pos : route)
+		{
+			s = s + pos.getLatitude();
+			s = s + ",";
+			s = s + pos.getLongitude();
+			s = s + ",";
+		}
+
+		return s;
+	}
+
+
 	private static List<Double> queryElevations(String s) throws IOException
 	{
         try

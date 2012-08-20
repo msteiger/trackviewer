@@ -37,7 +37,7 @@ public class Converter
 	 */
 	public static void main(String[] args)
 	{
-		File folderIn = new File(System.getProperty("user.home") + File.separator + "trackviewer");
+		File folderIn = new File(System.getProperty("user.home") + File.separator + "trackviewer" + File.separator	+ "original");
 		File folderOut = new File(System.getProperty("user.home") + File.separator + "trackviewer" + File.separator	+ "converted");
 		
 		folderOut.mkdirs();
@@ -71,8 +71,17 @@ public class Converter
 			try
 			{
 				String fname2 = fname.substring(0, fname.length() - 4) + "_fix.tcx";
-				fis = new FileInputStream(new File(folderIn, fname));
-				fos = new FileOutputStream(new File(folderOut, fname2));
+				File fileIn = new File(folderIn, fname);
+				File fileOut = new File(folderOut, fname2);
+
+				if (fileOut.exists() && fileOut.length() > 0)
+				{
+					System.out.println("Skipped " + fname);
+					continue;
+				}
+				
+				fis = new FileInputStream(fileIn);
+				fos = new FileOutputStream(fileOut);
 
 				fixElevations(tcxAdapter, fis, fos);
 
@@ -105,7 +114,7 @@ public class Converter
 	{
 		TrainingCenterDatabaseT data = tcx.unmarshallObject(is);
 		List<GeoPosition> route = extractRoute(data);
-		List<Double> ele = ElevationFixer.getElevationsComp(route);
+		List<Double> ele = ElevationFixer.getElevations(route);
 		setElevations(data, ele);
 		tcx.marshallObject(os, data);
 	}
@@ -129,9 +138,14 @@ public class Converter
 							double elevation = it.next();
 							
 							if (elevation < -32000)
-								throw new IllegalArgumentException("Invalid elevation: " + elevation);
-								
-							pt.setAltitudeMeters(elevation);
+							{
+								System.err.println("Invalid elevation: " + elevation);
+								pt.setAltitudeMeters(null);
+							}
+							else
+							{
+								pt.setAltitudeMeters(elevation);
+							}
 						}
 					}
 				}
