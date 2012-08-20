@@ -39,7 +39,7 @@ public class JChart extends JComponent
 	private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
 	private final Rectangle chartRect  = new Rectangle();
 
-	private Integer markerPos;
+	private int markerPos = -1;
 	
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class JChart extends JComponent
 	 */
 	public void setMarker(int pos)
 	{
-		markerPos = null;
+		markerPos = -1;
 		
 		if (pos < chartRect.x)
 			return;
@@ -95,7 +95,7 @@ public class JChart extends JComponent
 
 	private void drawMarker(Graphics g)
 	{
-		if (markerPos == null)
+		if (markerPos < 0)
 			return;
 		
 		// Draw selection marker line
