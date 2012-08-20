@@ -17,8 +17,9 @@ public final class TrackTableModel extends AbstractTableModel
 	private static final long serialVersionUID = 819860756869723997L;
 	private final List<Track> tracks;
 	private final String[] columnIds = { "date", "distance", "time", "speed", "altitude", "comments" };
-	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Average Speed (km/h)", "Altitude Diff. (m)", "Comments"};
+	private final String[] columnLabels = { "Date", "Distance (km)", "Time", "Avg. Speed (km/h)", "Altitude Diff. (m)", "Comments"};
 	private final Class<?>[] columnClass = { Date.class, Double.class, Date.class, Double.class, Double.class, String.class };
+	private final boolean[] columnEditable = { false, false, false, false, false, true };
 
 	/**
 	 * @param tracks the list of tracks
@@ -57,9 +58,15 @@ public final class TrackTableModel extends AbstractTableModel
 	@Override
 	public int getColumnCount()
 	{
-		return columnIds.length;
+		return columnIds.length - 1;
 	}
 
+	@Override
+	public boolean isCellEditable(int row, int col)
+	{
+		return columnEditable[col];
+	}
+	
 	@Override
 	public Object getValueAt(int row, int col)
 	{
@@ -87,12 +94,6 @@ public final class TrackTableModel extends AbstractTableModel
 		}
 		
 		return track;
-	}
-
-	@Override
-	public boolean isCellEditable(int row, int col)
-	{
-		return "comments".equals(columnIds[col]);
 	}
 
 	@Override
