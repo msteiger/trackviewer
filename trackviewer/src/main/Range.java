@@ -3,6 +3,7 @@ package main;
 
 /**
  * Represents a range
+ * @param <T> the type of elements 
  * @author Martin Steiger
  */
 public class Range<T>

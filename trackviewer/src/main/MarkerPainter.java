@@ -25,6 +25,7 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 	
 	/**
 	 * @param track the track
+	 * @param color the color
 	 */
 	public MarkerPainter(List<GeoPosition> track, Color color)
 	{
@@ -32,11 +33,18 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer>
 		this.color = color;
 	}
 
+	/**
+	 * Clears all markers
+	 */
 	public void clearMarkers()
 	{
 		markers.clear();
 	}
 	
+	/**
+	 * Adds a marker at the specified index
+	 * @param index the index in the data
+	 */
 	public void addMarker(int index)
 	{
 		if (index < 0 || index > track.size())

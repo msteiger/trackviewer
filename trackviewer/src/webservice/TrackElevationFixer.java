@@ -19,6 +19,9 @@ public class TrackElevationFixer
 {
 	private static final Log log = LogFactory.getLog(TrackElevationFixer.class);
 	
+	/**
+	 * @param track the track to fix
+	 */
 	public static void fixTrack(Track track)
 	{
 		List<Double> elevations;
