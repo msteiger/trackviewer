@@ -60,7 +60,7 @@ public class MainFrame extends JFrame
 	public MainFrame()
 	{
 		super("TrackViewer");
-		
+	
 		File folder = new File(System.getProperty("user.home") + File.separator + "trackviewer");
 
 		final List<Track> tracks = new CopyOnWriteArrayList<Track>();
@@ -262,7 +262,7 @@ public class MainFrame extends JFrame
 //		JDialog ...		
 		try
 		{
-			TrackLoader.save("E:\\fixed.gpx", track);
+			TrackLoader.saveAsGpx("E:\\fixed.gpx", track);
 		}
 		catch (IOException e)
 		{

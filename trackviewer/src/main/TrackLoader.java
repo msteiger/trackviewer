@@ -15,6 +15,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import tcx.TcxAdapter;
 import track.Track;
 
@@ -27,6 +30,12 @@ import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
  */
 public class TrackLoader
 {
+	private static final Log log = LogFactory.getLog(TrackLoader.class);
+	
+	/**
+	 * @param folder the folder that contains the track files
+	 * @param cb the callback
+	 */
 	public static void readTracks(final File folder, final TrackLoadListener cb)
 	{
 		Thread th = new Thread(new Runnable()
@@ -61,7 +70,7 @@ public class TrackLoader
 		catch (JAXBException e)
 		{
 			JOptionPane.showMessageDialog(null, e);
-//			log.error("Error initializing TcxAdapter", e);
+			log.error("Error initializing TcxAdapter", e);
 			return;
 		}
 
@@ -85,11 +94,12 @@ public class TrackLoader
 					}
 				}
 				
-				System.out.println("Loaded " + fname);
+				log.debug("Loaded " + fname);
 			}
 			catch (Exception e)
 			{
 				JOptionPane.showMessageDialog(null, e);
+				log.error(e.getMessage(), e);
 			}
 			finally
 			{
@@ -107,7 +117,12 @@ public class TrackLoader
 		
 	}
 
-	public static void save(String fname, Track track) throws IOException
+	/**
+	 * @param fname the filename
+	 * @param track the track data
+	 * @throws IOException if something goes wrong
+	 */
+	public static void saveAsGpx(String fname, Track track) throws IOException
 	{
 		OutputStream os = null;
 		
