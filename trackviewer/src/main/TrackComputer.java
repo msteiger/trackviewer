@@ -4,6 +4,9 @@ package main;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import common.GeoUtils;
 
 import track.Track;
@@ -15,11 +18,14 @@ import track.TrackPoint;
  */
 public class TrackComputer
 {
+	private static final Log log = LogFactory.getLog(TrackComputer.class);
+	
 	/**
 	 * @param track fill track with missing data
 	 */
 	public static void repairTrackData(Track track)
 	{
+		fixInvalidElevations(track);
 		fixNonNullStarts(track);
 		fixDistances(track);
 		fixTimes(track);
@@ -27,6 +33,55 @@ public class TrackComputer
 		for (int i=0; i<track.getPoints().size(); i++)
 		{
 			computeSpeed(track, i);
+		}
+	}
+
+	private static void fixInvalidElevations(Track track)
+	{
+		TrackPoint lastValidPoint = null;
+		TrackPoint nextValidPoint = null;
+		
+		for (int i = 0; i< track.getPoints().size(); i++)
+		{
+			TrackPoint pt = track.getPoints().get(i);
+			
+			if (Double.isNaN(pt.getElevation()))
+			{
+				for (int j = i + 1; j< track.getPoints().size(); j++)
+				{
+					TrackPoint pt2 = track.getPoints().get(j);
+					double nextEle = pt2.getElevation();
+					if (!Double.isNaN(nextEle))
+					{
+						nextValidPoint = pt2;
+						break;
+					}
+				}
+				
+				if (lastValidPoint != null && nextValidPoint != null)
+				{
+					long lastTime = lastValidPoint.getTime().getTime();
+					long nextTime = nextValidPoint.getTime().getTime();
+					long time = pt.getTime().getTime();
+					
+					double ipol = (time - lastTime) / (double)(nextTime - lastTime);
+					
+					double lastEle = lastValidPoint.getElevation();
+					double nextEle = nextValidPoint.getElevation();
+					
+					double ele = (1.0 - ipol) * lastEle + ipol * nextEle;
+					
+					pt.setElevation(ele);
+				}
+				else
+				{
+					log.warn("Could not compute elevation");
+				}
+			}
+			else
+			{
+				lastValidPoint = pt;
+			}
 		}
 	}
 
