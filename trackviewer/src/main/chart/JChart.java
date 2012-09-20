@@ -235,6 +235,9 @@ public class JChart extends JComponent
 		g.drawLine(x, y, (int)chartRect.getMinX(), y);
 		g.drawLine(x, y, x - arrowSize, y - arrowSize);
 		g.drawLine(x, y, x - arrowSize, y + arrowSize);
+		
+		if (horzDesc == null)
+			return;
 
 		// Draw horizontal axis description
 		x = (int) (chartRect.getMaxX() + overlap + arrowSize * 3);
@@ -255,6 +258,9 @@ public class JChart extends JComponent
 		g.drawLine(x, y, x, (int)chartRect.getMaxY());
 		g.drawLine(x, y, x - arrowSize, y + arrowSize);
 		g.drawLine(x, y, x + arrowSize, y + arrowSize);
+		
+		if (vertDesc == null)
+			return;
 
 		// Draw vertical axis description
 		Rectangle2D descSize = g.getFontMetrics().getStringBounds(vertDesc, g);
