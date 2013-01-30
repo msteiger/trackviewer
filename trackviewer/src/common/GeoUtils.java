@@ -1,6 +1,8 @@
 
 package common;
 
+import main.GeoPos;
+
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
 /**
@@ -9,6 +11,26 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
  */
 public class GeoUtils
 {
+	/**
+	 * WGS84 The flattening factor 1/f of the earth spheroid
+	 */
+	public static final double WGS84_EARTH_FLATTENING = 1.0 / 298.257223563;
+
+	/**
+	 * WGS84 The (transverse) major (equatorial) radius 
+	 */
+	public static final double WGS84_EARTH_MAJOR = 6378137.0;
+
+	/**
+	 * WGS84 The polar semi-minor (conjugate) radius
+	 */
+	public static final double WGS84_EARTH_MINOR = WGS84_EARTH_MAJOR * (1.0 - WGS84_EARTH_FLATTENING);
+
+	/**
+	 * The mean radius as defined by the International Union of Geodesy and Geophysics (IUGG)  
+	 */
+	public static final double WGS84_MEAN_RADIUS = (2 * WGS84_EARTH_MAJOR + WGS84_EARTH_MINOR) / 3.0;
+	
 	/**
 	 * This uses the "haversine" formula to calculate the great-circle 
 	 * distance between two points – that is, the shortest distance 
@@ -47,6 +69,35 @@ public class GeoUtils
 		return computeDistance(
 				pos1.getLatitude(), pos1.getLongitude(), 
 				pos2.getLatitude(), pos2.getLongitude());
+	}
+
+	/**
+	 * Get a new {@link GeoPos} distanceMeters away on the compass bearing
+	 * azimuthDegrees from the {@link GeoPos} point - accurate to better than
+	 * 200m in 140km (20m in 14km) in the UK
+	 * @param point the point
+	 * @param distanceMeters the distance in meters
+	 * @param azimuthDegrees the azimuth in degrees
+	 * @return the new point
+	 */
+	public static GeoPos pointAtRangeAndBearing(GeoPos point, double distanceMeters, double azimuthDegrees)
+	{
+		double latr = point.lat() * Math.PI / 180.0;
+		double lonr = point.lng() * Math.PI / 180.0;
+
+		double coslat = Math.cos(latr);
+		double sinlat = Math.sin(latr);
+		double az = azimuthDegrees * Math.PI / 180.0;
+		double cosaz = Math.cos(az);
+		double sinaz = Math.sin(az);
+		double dr = distanceMeters / WGS84_MEAN_RADIUS; // distance in radians
+		double sind = Math.sin(dr);
+		double cosd = Math.cos(dr);
+
+		double lat = Math.asin((sinlat * cosd) + (coslat * sind * cosaz)) * 180.0 / Math.PI;
+		double lon = Math.atan2((sind * sinaz), (coslat * cosd) - (sinlat * sind * cosaz)) + lonr * 180.0 / Math.PI;
+		
+		return new GeoPos(lat, lon);
 	}
 
 }
