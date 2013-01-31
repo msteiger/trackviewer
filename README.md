@@ -1,7 +1,7 @@
 GPS Trackviewer
 ===========
 
-![Screenshot](jxmapviewer2/raw/master/images/screenshot1.png "Screenshot")
+![Screenshot](trackviewer/raw/master/images/screenshot1.png "Screenshot")
 
 GPS track viewer displays recorded GPS data in multiple, linked views.
 
