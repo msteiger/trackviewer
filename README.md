@@ -1,7 +1,7 @@
 GPS Trackviewer
 ===========
 
-![Screenshot](trackviewer/raw/master/images/screenshot1.png)
+![screenshot1](trackviewer/raw/master/images/screenshot1.png "Screenshot1")
 
 GPS track viewer displays recorded GPS data in multiple, linked views.
 
