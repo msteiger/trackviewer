@@ -57,11 +57,12 @@ public class TrackLoader
 			@Override
 			public boolean accept(File dir, String name)
 			{
-				return name.endsWith(".tcx");
+				return name.endsWith(".tcx") || name.endsWith(".gpx");
 			}
 		});
 
 		TcxAdapter tcxAdapter = null;
+                GpxAdapter gpxAdapter = null;
 		
 		try
 		{
@@ -73,6 +74,16 @@ public class TrackLoader
 			log.error("Error initializing TcxAdapter", e);
 			return;
 		}
+		try
+		{
+			gpxAdapter = new GpxAdapter();
+		}
+		catch (JAXBException e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			log.error("Error initializing GpxAdapter", e);
+			return;
+		}
 
 		for (String fname : files)
 		{
@@ -81,18 +92,31 @@ public class TrackLoader
 			try
 			{
 				fis = new FileInputStream(new File(folder, fname));
-				TrainingCenterDatabaseT data = tcxAdapter.unmarshallObject(fis);
-				List<Track> read = tcxAdapter.convertToTracks(data);
-				
-				for (Track t : read)
-				{
-					// skip empty tracks
-					if (!t.getPoints().isEmpty())
-					{
-						TrackComputer.repairTrackData(t);
-						cb.trackLoaded(t);
-					}
-				}
+                                if(fname.toLowerCase().endsWith(".tcx")) {
+                                    TrainingCenterDatabaseT data = tcxAdapter.unmarshallObject(fis);
+                                    List<Track> read = tcxAdapter.convertToTracks(data);
+
+                                    for (Track t : read)
+                                    {
+                                            // skip empty tracks
+                                            if (!t.getPoints().isEmpty())
+                                            {
+                                                    TrackComputer.repairTrackData(t);
+                                                    cb.trackLoaded(t);
+                                            }
+                                    }
+                                } else if (fname.toLowerCase().endsWith(".gpx")) {
+                                    List<Track> read = gpxAdapter.read(fis);
+                                    for (Track t : read)
+                                    {
+                                            // skip empty tracks
+                                            if (!t.getPoints().isEmpty())
+                                            {
+                                                    TrackComputer.repairTrackData(t);
+                                                    cb.trackLoaded(t);
+                                            }
+                                    }
+                                }
 				
 				log.debug("Loaded " + fname);
 			}
