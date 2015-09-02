@@ -1,7 +1,7 @@
 
 package track;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * A waypoint

@@ -13,7 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import track.Track;
 import track.TrackPoint;

@@ -3,7 +3,7 @@ package track;
 
 import java.util.Date;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * A single point in a track

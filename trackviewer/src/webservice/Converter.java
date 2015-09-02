@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import tcx.TcxAdapter;
 

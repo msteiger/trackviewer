@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

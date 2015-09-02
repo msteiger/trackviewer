@@ -4,7 +4,7 @@ package webservice;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * Uses polyline compression as described by google developers:

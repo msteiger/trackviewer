@@ -3,7 +3,7 @@ package common;
 
 import main.GeoPos;
 
-import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * Some geo-related utilities
@@ -33,8 +33,8 @@ public class GeoUtils
 	
 	/**
 	 * This uses the "haversine" formula to calculate the great-circle 
-	 * distance between two points – that is, the shortest distance 
-	 * over the earth's surface – giving an 'as-the-crow-flies' distance between the points
+	 * distance between two points ï¿½ that is, the shortest distance 
+	 * over the earth's surface ï¿½ giving an 'as-the-crow-flies' distance between the points
 	 * @param lat1 latitude of point 1
 	 * @param lon1 longitude of point 1
 	 * @param lat2 latitude of point 2
