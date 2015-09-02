@@ -93,6 +93,10 @@ public class Track
 		return name;
 	}
 
+        public void setName(String name) {
+            this.name = name;
+        }
+
 	/**
 	 * @return the average speed in km/h
 	 */
@@ -168,9 +172,13 @@ public class Track
 	/**
 	 * @return the total time of the track
 	 */
-	public Date getTotalTime()
+	public long getTotalTime()
 	{
-		return points.get(points.size() - 1).getTime();
+                if(points.size() < 2) {
+                    return 0;
+                }
+		return points.get(points.size() - 1).getTime().getTime()
+                        - points.get(0).getTime().getTime();
 	}
 
 	/**

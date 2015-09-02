@@ -17,7 +17,14 @@ public class TimeFormat extends Format
 	@Override
 	public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos)
 	{
-		long totSecs = ((Date)obj).getTime() / 1000;
+                long totSecs;
+                if(obj instanceof Date) {
+                    totSecs = ((Date)obj).getTime() / 1000;
+                } else if(obj instanceof Number) {
+                    totSecs = ((Number) obj).longValue() / 1000;
+                } else {
+                    throw new IllegalArgumentException("TimeFormat expects Date or Long objects");
+                }
 		long sec = totSecs % 60;
 		long min = (totSecs / 60) % 60;
 		long hrs = (totSecs / 3600) % 60;

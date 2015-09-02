@@ -72,11 +72,14 @@ public class GpxAdapter
 
 		ArrayList<Track> list = new ArrayList<Track>();
 		
+                int trackCount = 1;
+                
 		for (TrkType trk : gpx.getTrk())
 		{
 			for (TrksegType seg : trk.getTrkseg())
 			{
 				Track track = new Track();
+                                track.setName(trk.getName() + " #" + trackCount);
 
 				for (WptType pt : seg.getTrkpt())
 				{
@@ -87,11 +90,16 @@ public class GpxAdapter
 					GeoPosition pos = new GeoPosition(lat, lon);
 
 					TrackPoint tp = new TrackPoint(pos, cal.getTime());
+                                        if(track.getStartTime() == null) {
+                                            track.setStartTime(cal.getTime());
+                                        }
+                                        
 					tp.setElevation(ele);
 					track.addPoint(tp);
 				}
 
 				list.add(track);
+                                trackCount++;
 			}
 		}
 
