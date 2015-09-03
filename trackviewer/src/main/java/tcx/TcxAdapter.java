@@ -1,4 +1,3 @@
-
 package tcx;
 
 import java.io.InputStream;
@@ -28,104 +27,98 @@ import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
 
 /**
  * Reads track data from .tcx files
+ *
  * @author Martin Steiger
  */
-public class TcxAdapter
-{
-	private final JAXBContext context;
+public class TcxAdapter {
 
-	/**
-	 * @throws JAXBException occurs if .. 
-	 * <ol>
-     *   <li>failure to locate either ObjectFactory.class or jaxb.index in the packages</li>
-     *   <li>an ambiguity among global elements contained in the contextPath</li>
-     *   <li>failure to locate a value for the context factory provider property</li>
-     *   <li>mixing schema derived packages from different providers on the same contextPath</li>
+    private final JAXBContext context;
+
+    /**
+     * @throws JAXBException occurs if ..
+     * <ol>
+     * <li>failure to locate either ObjectFactory.class or jaxb.index in the
+     * packages</li>
+     * <li>an ambiguity among global elements contained in the contextPath</li>
+     * <li>failure to locate a value for the context factory provider
+     * property</li>
+     * <li>mixing schema derived packages from different providers on the same
+     * contextPath</li>
      * </ol>
-	 */
-	public TcxAdapter() throws JAXBException
-	{
-		Class<?> clazz = TrainingCenterDatabaseT.class;
-		String packageName = clazz.getPackage().getName();
-		context = JAXBContext.newInstance(packageName);
-	}
+     */
+    public TcxAdapter() throws JAXBException {
+        Class<?> clazz = TrainingCenterDatabaseT.class;
+        String packageName = clazz.getPackage().getName();
+        context = JAXBContext.newInstance(packageName);
+    }
 
-	/**
-	 * @param tcx the tcx raw data
-	 * @return the extracted track data
-	 */
-	public List<Track> convertToTracks(TrainingCenterDatabaseT tcx)
-	{
-		ArrayList<Track> list = new ArrayList<Track>();
+    /**
+     * @param tcx the tcx raw data
+     * @return the extracted track data
+     */
+    public List<Track> convertToTracks(TrainingCenterDatabaseT tcx) {
+        ArrayList<Track> list = new ArrayList<Track>();
 
-		for (ActivityT activity : tcx.getActivities().getActivity())
-		{
-			for (ActivityLapT lap : activity.getLap())
-			{
-				Track track = new Track();
+        for (ActivityT activity : tcx.getActivities().getActivity()) {
+            for (ActivityLapT lap : activity.getLap()) {
+                Track track = new Track();
 
-				for (TrackT trk : lap.getTrack())
-				{
-					
-					for (TrackpointT pt : trk.getTrackpoint())
-					{
-						PositionT pos = pt.getPosition();
+                for (TrackT trk : lap.getTrack()) {
 
-						if (pos != null)
-						{
-							double lat = pos.getLatitudeDegrees();
-							double lon = pos.getLongitudeDegrees();
-							Double ele = pt.getAltitudeMeters();
-							GregorianCalendar time = pt.getTime().toGregorianCalendar();
-							GeoPosition gp = new GeoPosition(lat, lon);
-							TrackPoint tp = new TrackPoint(gp, time.getTime());
-							
-							if (ele == null)
-							{
-								ele = Double.NaN;
-							}
-							
-							tp.setElevation(ele);
-							track.addPoint(tp);
-						}
-					}
+                    for (TrackpointT pt : trk.getTrackpoint()) {
+                        PositionT pos = pt.getPosition();
 
-				}
-				list.add(track);
-			}
-		}
+                        if (pos != null) {
+                            double lat = pos.getLatitudeDegrees();
+                            double lon = pos.getLongitudeDegrees();
+                            Double ele = pt.getAltitudeMeters();
+                            GregorianCalendar time = pt.getTime().toGregorianCalendar();
+                            GeoPosition gp = new GeoPosition(lat, lon);
+                            TrackPoint tp = new TrackPoint(gp, time.getTime());
 
-		return list;
-	}
+                            if (ele == null) {
+                                ele = Double.NaN;
+                            }
 
-	/**
-	 * @param is the input stream
-	 * @return the track data
-	 * @throws JAXBException if the data cannot be read
-	 */
-	public TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException
-	{
-		Unmarshaller unmarshaller = context.createUnmarshaller();
+                            tp.setElevation(ele);
+                            track.addPoint(tp);
+                        }
+                    }
 
-		JAXBElement<TrainingCenterDatabaseT> jaxbObject;
-		jaxbObject = (JAXBElement<TrainingCenterDatabaseT>) unmarshaller.unmarshal(is);
+                }
+                list.add(track);
+            }
+        }
 
-		return jaxbObject.getValue();
-	}
-	
-	/**
-	 * @param os the output stream
-	 * @param value the value to be written
-	 * @throws JAXBException if the data cannot be written
-	 */
-	public void marshallObject(OutputStream os, TrainingCenterDatabaseT value) throws JAXBException
-	{
-		ObjectFactory of = new ObjectFactory();
+        return list;
+    }
 
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-		marshaller.marshal(of.createTrainingCenterDatabase(value), os);
-	}	
-	
+    /**
+     * @param is the input stream
+     * @return the track data
+     * @throws JAXBException if the data cannot be read
+     */
+    public TrainingCenterDatabaseT unmarshallObject(InputStream is) throws JAXBException {
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+
+        JAXBElement<TrainingCenterDatabaseT> jaxbObject;
+        jaxbObject = (JAXBElement<TrainingCenterDatabaseT>) unmarshaller.unmarshal(is);
+
+        return jaxbObject.getValue();
+    }
+
+    /**
+     * @param os the output stream
+     * @param value the value to be written
+     * @throws JAXBException if the data cannot be written
+     */
+    public void marshallObject(OutputStream os, TrainingCenterDatabaseT value) throws JAXBException {
+        ObjectFactory of = new ObjectFactory();
+
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.marshal(of.createTrainingCenterDatabase(value), os);
+    }
+
 }

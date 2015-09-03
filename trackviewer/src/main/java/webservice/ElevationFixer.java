@@ -1,4 +1,3 @@
-
 package webservice;
 
 import java.io.BufferedReader;
@@ -19,174 +18,159 @@ import org.json.JSONObject;
 
 /**
  * Retrieves a list of elevations from a web service
+ *
  * @author Martin Steiger
  */
-public class ElevationFixer
-{
-	private static final Log log = LogFactory.getLog(ElevationFixer.class);
-	
-	private static final String url = "http://open.mapquestapi.com/elevation/v1/profile?useFilter=true";
-	
-	/**
-	 * The compressed version does not work atm (bug @ mapquest)
-	 */
-	private static final boolean useCompression = false;
+public class ElevationFixer {
 
-	/**
-	 * This is just a guess that seems to work for MapQuest Elevation API v1
-	 *  200 seems to be ok for raw
-	 * 1500 seems to be ok for compressed
-	 */
-	private static final int chunkSize = 200;
+    private static final Log log = LogFactory.getLog(ElevationFixer.class);
 
-	/**
-	 * Retrieves a list of elevations from a web service using 
-	 * google polyline compression URLs.
-	 * @param routeFull the route
-	 * @return the list of elevations
-	 * @throws IOException if something goes wrong
-	 */
-	public static List<Double> getElevations(List<GeoPosition> routeFull) throws IOException
-	{
-		int min = 0;
-		int max = Math.min(routeFull.size(), min + chunkSize);
-		
-		List<Double> ele = new ArrayList<Double>();
-		
-		while (min < max)
-		{
-			System.out.println("Converting [" + min + ".." + max + "]");
-			
-			List<GeoPosition> route = routeFull.subList(min, max);
+    private static final String url = "http://open.mapquestapi.com/elevation/v1/profile?useFilter=true";
 
-			String query;
-			
-			if (useCompression)
-				query = getCompressedQuery(route); else
-				query = getRawQuery(route);
-		
-			List<Double> result = queryElevations(query); 
-					
-			if (result.size() != max - min)
-			{
-				throw new IllegalStateException("Elevation query returned only " + result.size() + " instead of " + (max - min) + " points");
-			}
-			
-			ele.addAll(result);
+    /**
+     * The compressed version does not work atm (bug @ mapquest)
+     */
+    private static final boolean useCompression = false;
 
-			min = max;
-			max = Math.min(routeFull.size(), min + chunkSize);
-		}
-		
-		return ele;
-	}
-	
-	private static String getCompressedQuery(List<GeoPosition> route)
-	{
-		final String s = "&shapeFormat=cmp&latLngCollection=";
+    /**
+     * This is just a guess that seems to work for MapQuest Elevation API v1 200
+     * seems to be ok for raw 1500 seems to be ok for compressed
+     */
+    private static final int chunkSize = 200;
 
-		String compressed = PolylineEncoder.compress(route, 5);
+    /**
+     * Retrieves a list of elevations from a web service using google polyline
+     * compression URLs.
+     *
+     * @param routeFull the route
+     * @return the list of elevations
+     * @throws IOException if something goes wrong
+     */
+    public static List<Double> getElevations(List<GeoPosition> routeFull) throws IOException {
+        int min = 0;
+        int max = Math.min(routeFull.size(), min + chunkSize);
 
-		return s + compressed;
-	}
-	
-	private static String getRawQuery(List<GeoPosition> route)
-	{
-		String s = "&shapeFormat=raw&latLngCollection=";
-		
-		for (GeoPosition pos : route)
-		{
-			s = s + pos.getLatitude();
-			s = s + ",";
-			s = s + pos.getLongitude();
-			s = s + ",";
-		}
+        List<Double> ele = new ArrayList<Double>();
 
-		return s;
-	}
+        while (min < max) {
+            System.out.println("Converting [" + min + ".." + max + "]");
 
+            List<GeoPosition> route = routeFull.subList(min, max);
 
-	private static List<Double> queryElevations(String s) throws IOException
-	{
-        try
-		{
-    		String response = queryUrl(url + s);
-    		
-    		handleInfo(response);
-    		
-			List<Double> data = handleResponse(response);
-			return data;
-		}
-		catch (JSONException e)
-		{
-			throw new IOException(e);
-		}
-	}
-	
-	private static String queryUrl(String string) throws IOException
-	{
-		InputStream is = null;
-		try
-		{
-			URL url = new URL(string);
+            String query;
 
-			URLConnection conn = url.openConnection();
-			is = conn.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader in = new BufferedReader(isr);
-			StringBuilder sb = new StringBuilder();
-			String line;
+            if (useCompression) {
+                query = getCompressedQuery(route);
+            } else {
+                query = getRawQuery(route);
+            }
 
-			while ((line = in.readLine()) != null)
-			{
-				sb.append(line);
-			}
+            List<Double> result = queryElevations(query);
 
-			return sb.toString();
-		}
-		finally
-		{
-			if (is != null)
-				is.close();
-		}
-	}
-	
-	private static void handleInfo(String source) throws JSONException
-	{
-		JSONObject obj = new JSONObject(source);
+            if (result.size() != max - min) {
+                throw new IllegalStateException("Elevation query returned only "
+                        + result.size() + " instead of " + (max - min)
+                        + " points");
+            }
 
-		JSONObject info = obj.getJSONObject("info");
-		
-		int code = info.getInt("statuscode");
-		if (code != 0)
-		{
-			log.info(code);
-		}
-		
-		JSONArray msgs = (JSONArray)info.get("messages");
-		for (int i = 0; i < msgs.length(); i++)
-		{
-			log.info(msgs.getString(i));
-		}
+            ele.addAll(result);
 
-	}
+            min = max;
+            max = Math.min(routeFull.size(), min + chunkSize);
+        }
 
-	private static List<Double> handleResponse(String source) throws JSONException
-	{
-		JSONObject obj = new JSONObject(source);
-		
-		JSONArray arr = obj.getJSONArray("elevationProfile");
+        return ele;
+    }
 
-		List<Double> data = new ArrayList<Double>();
-		
-		for (int i = 0; i < arr.length(); i++)
-		{
-			JSONObject obj2 = (JSONObject)arr.get(i);
+    private static String getCompressedQuery(List<GeoPosition> route) {
+        final String s = "&shapeFormat=cmp&latLngCollection=";
 
-			double val = obj2.getDouble("height");
-			data.add(Double.valueOf(val));		// cache often-used values
-		}
-		
-		return data;
-	}
+        String compressed = PolylineEncoder.compress(route, 5);
+
+        return s + compressed;
+    }
+
+    private static String getRawQuery(List<GeoPosition> route) {
+        String s = "&shapeFormat=raw&latLngCollection=";
+
+        for (GeoPosition pos : route) {
+            s = s + pos.getLatitude();
+            s = s + ",";
+            s = s + pos.getLongitude();
+            s = s + ",";
+        }
+
+        return s;
+    }
+
+    private static List<Double> queryElevations(String s) throws IOException {
+        try {
+            String response = queryUrl(url + s);
+
+            handleInfo(response);
+
+            List<Double> data = handleResponse(response);
+            return data;
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static String queryUrl(String string) throws IOException {
+        InputStream is = null;
+        try {
+            URL url = new URL(string);
+
+            URLConnection conn = url.openConnection();
+            is = conn.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader in = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = in.readLine()) != null) {
+                sb.append(line);
+            }
+
+            return sb.toString();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+
+    private static void handleInfo(String source) throws JSONException {
+        JSONObject obj = new JSONObject(source);
+
+        JSONObject info = obj.getJSONObject("info");
+
+        int code = info.getInt("statuscode");
+        if (code != 0) {
+            log.info(code);
+        }
+
+        JSONArray msgs = (JSONArray) info.get("messages");
+        for (int i = 0; i < msgs.length(); i++) {
+            log.info(msgs.getString(i));
+        }
+
+    }
+
+    private static List<Double> handleResponse(String source) throws JSONException {
+        JSONObject obj = new JSONObject(source);
+
+        JSONArray arr = obj.getJSONArray("elevationProfile");
+
+        List<Double> data = new ArrayList<Double>();
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj2 = (JSONObject) arr.get(i);
+
+            double val = obj2.getDouble("height");
+            data.add(Double.valueOf(val));		// cache often-used values
+        }
+
+        return data;
+    }
 }

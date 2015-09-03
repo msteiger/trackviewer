@@ -1,4 +1,3 @@
-
 package webservice;
 
 import java.io.File;
@@ -26,161 +25,136 @@ import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrackpointT;
 import com.garmin.xmlschemas.trainingcenterdatabase.v2.TrainingCenterDatabaseT;
 
 /**
- * Fixes all elevations in all .tcx files in a 
- * folder using the {@link ElevationFixer} class.
+ * Fixes all elevations in all .tcx files in a folder using the
+ * {@link ElevationFixer} class.
+ *
  * @author Martin Steiger
  */
-public class Converter
-{
-	/**
-	 * @param args (ignored)
-	 */
-	public static void main(String[] args)
-	{
-		File folderIn = new File(System.getProperty("user.home") + File.separator + "trackviewer" + File.separator	+ "original");
-		File folderOut = new File(System.getProperty("user.home") + File.separator + "trackviewer" + File.separator	+ "converted");
-		
-		folderOut.mkdirs();
+public class Converter {
 
-		String[] files = folderIn.list(new FilenameFilter()
-		{
-			@Override
-			public boolean accept(File dir, String name)
-			{
-				return name.endsWith(".tcx");
-			}
-		});
+    /**
+     * @param args (ignored)
+     */
+    public static void main(String[] args) {
+        File folderIn = new File(System.getProperty("user.home")
+                + File.separator + "trackviewer" + File.separator + "original");
+        File folderOut = new File(System.getProperty("user.home")
+                + File.separator + "trackviewer" + File.separator + "converted");
 
-		TcxAdapter tcxAdapter = null;
+        folderOut.mkdirs();
 
-		try
-		{
-			tcxAdapter = new TcxAdapter();
-		}
-		catch (JAXBException e)
-		{
-			e.printStackTrace();
-			return;
-		}
+        String[] files = folderIn.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".tcx");
+            }
+        });
 
-		for (String fname : files)
-		{
-			InputStream fis = null;
-			OutputStream fos = null;
+        TcxAdapter tcxAdapter = null;
 
-			try
-			{
-				String fname2 = fname.substring(0, fname.length() - 4) + "_fix.tcx";
-				File fileIn = new File(folderIn, fname);
-				File fileOut = new File(folderOut, fname2);
+        try {
+            tcxAdapter = new TcxAdapter();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return;
+        }
 
-				if (fileOut.exists() && fileOut.length() > 0)
-				{
-					System.out.println("Skipped " + fname);
-					continue;
-				}
-				
-				fis = new FileInputStream(fileIn);
-				fos = new FileOutputStream(fileOut);
+        for (String fname : files) {
+            InputStream fis = null;
+            OutputStream fos = null;
 
-				fixElevations(tcxAdapter, fis, fos);
+            try {
+                String fname2 = fname.substring(0, fname.length() - 4)
+                        + "_fix.tcx";
+                File fileIn = new File(folderIn, fname);
+                File fileOut = new File(folderOut, fname2);
 
-				System.out.println("Converted " + fname);
-			}
-			catch (Exception e)
-			{
-				System.out.println("Error converting " + fname);
-				e.printStackTrace();
-			}
-			finally
-			{
-				try
-				{
-					if (fos != null)
-						fos.close();
+                if (fileOut.exists() && fileOut.length() > 0) {
+                    System.out.println("Skipped " + fname);
+                    continue;
+                }
 
-					if (fis != null)
-						fis.close();
-				}
-				catch (Exception e)
-				{
-					// ignore
-				}
-			}
-		}
-	}
+                fis = new FileInputStream(fileIn);
+                fos = new FileOutputStream(fileOut);
 
-	private static void fixElevations(TcxAdapter tcx, InputStream is, OutputStream os) throws JAXBException, IOException
-	{
-		TrainingCenterDatabaseT data = tcx.unmarshallObject(is);
-		List<GeoPosition> route = extractRoute(data);
-		List<Double> ele = ElevationFixer.getElevations(route);
-		setElevations(data, ele);
-		tcx.marshallObject(os, data);
-	}
+                fixElevations(tcxAdapter, fis, fos);
 
-	private static void setElevations(TrainingCenterDatabaseT tcx, List<Double> ele)
-	{
-		Iterator<Double> it = ele.iterator();
+                System.out.println("Converted " + fname);
+            } catch (Exception e) {
+                System.out.println("Error converting " + fname);
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                    }
 
-		for (ActivityT activity : tcx.getActivities().getActivity())
-		{
-			for (ActivityLapT lap : activity.getLap())
-			{
-				for (TrackT trk : lap.getTrack())
-				{
-					for (TrackpointT pt : trk.getTrackpoint())
-					{
-						PositionT pos = pt.getPosition();
+                    if (fis != null) {
+                        fis.close();
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        }
+    }
 
-						if (pos != null)
-						{
-							double elevation = it.next();
-							
-							if (elevation < -32000)
-							{
-								System.err.println("Invalid elevation: " + elevation);
-								pt.setAltitudeMeters(null);
-							}
-							else
-							{
-								pt.setAltitudeMeters(elevation);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    private static void fixElevations(TcxAdapter tcx, InputStream is, OutputStream os) throws JAXBException, IOException {
+        TrainingCenterDatabaseT data = tcx.unmarshallObject(is);
+        List<GeoPosition> route = extractRoute(data);
+        List<Double> ele = ElevationFixer.getElevations(route);
+        setElevations(data, ele);
+        tcx.marshallObject(os, data);
+    }
 
-	private static List<GeoPosition> extractRoute(TrainingCenterDatabaseT tcx)
-	{
-		List<GeoPosition> route = new ArrayList<GeoPosition>();
+    private static void setElevations(TrainingCenterDatabaseT tcx, List<Double> ele) {
+        Iterator<Double> it = ele.iterator();
 
-		for (ActivityT activity : tcx.getActivities().getActivity())
-		{
-			for (ActivityLapT lap : activity.getLap())
-			{
-				for (TrackT trk : lap.getTrack())
-				{
-					for (TrackpointT pt : trk.getTrackpoint())
-					{
-						PositionT pos = pt.getPosition();
+        for (ActivityT activity : tcx.getActivities().getActivity()) {
+            for (ActivityLapT lap : activity.getLap()) {
+                for (TrackT trk : lap.getTrack()) {
+                    for (TrackpointT pt : trk.getTrackpoint()) {
+                        PositionT pos = pt.getPosition();
 
-						if (pos != null)
-						{
-							double lat = pos.getLatitudeDegrees();
-							double lon = pos.getLongitudeDegrees();
-							GeoPosition gp = new GeoPosition(lat, lon);
+                        if (pos != null) {
+                            double elevation = it.next();
 
-							route.add(gp);
-						}
-					}
-				}
-			}
-		}
+                            if (elevation < -32000) {
+                                System.err.println("Invalid elevation: "
+                                        + elevation);
+                                pt.setAltitudeMeters(null);
+                            } else {
+                                pt.setAltitudeMeters(elevation);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-		return route;
-	}
+    private static List<GeoPosition> extractRoute(TrainingCenterDatabaseT tcx) {
+        List<GeoPosition> route = new ArrayList<GeoPosition>();
+
+        for (ActivityT activity : tcx.getActivities().getActivity()) {
+            for (ActivityLapT lap : activity.getLap()) {
+                for (TrackT trk : lap.getTrack()) {
+                    for (TrackpointT pt : trk.getTrackpoint()) {
+                        PositionT pos = pt.getPosition();
+
+                        if (pos != null) {
+                            double lat = pos.getLatitudeDegrees();
+                            double lon = pos.getLongitudeDegrees();
+                            GeoPosition gp = new GeoPosition(lat, lon);
+
+                            route.add(gp);
+                        }
+                    }
+                }
+            }
+        }
+
+        return route;
+    }
 
 }

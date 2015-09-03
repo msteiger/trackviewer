@@ -1,4 +1,3 @@
-
 package track;
 
 import java.util.Date;
@@ -7,98 +6,89 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  * A single point in a track
+ *
  * @author Martin Steiger
  */
-public class TrackPoint
-{
-	private final GeoPosition pos;
-	
-	private Date time;
+public class TrackPoint {
 
-	private double elevation;
-	private double distance;
-	private double speed;
+    private final GeoPosition pos;
 
-	/**
-	 * @param pos the position
-	 * @param time the time
-	 */
-	public TrackPoint(GeoPosition pos, Date time)
-	{
-		this.time = time;
-		this.pos = pos;
-	}
+    private Date time;
 
-	/**
-	 * @return the pos
-	 */
-	public GeoPosition getPos()
-	{
-		return pos;
-	}
+    private double elevation;
+    private double distance;
+    private double speed;
 
-	/**
-	 * @return the elevation
-	 */
-	public double getElevation()
-	{
-		return elevation;
-	}
+    /**
+     * @param pos the position
+     * @param time the time
+     */
+    public TrackPoint(GeoPosition pos, Date time) {
+        this.time = time;
+        this.pos = pos;
+    }
 
-	/**
-	 * @return the time
-	 */
-	public Date getTime()
-	{
-		return time;
-	}
+    /**
+     * @return the pos
+     */
+    public GeoPosition getPos() {
+        return pos;
+    }
 
-	/**
-	 * @return the speed
-	 */
-	public double getSpeed()
-	{
-		return speed;
-	}
+    /**
+     * @return the elevation
+     */
+    public double getElevation() {
+        return elevation;
+    }
 
-	/**
-	 * @param speed the speed to set
-	 */
-	public void setSpeed(double speed)
-	{
-		this.speed = speed;
-	}
+    /**
+     * @return the time
+     */
+    public Date getTime() {
+        return time;
+    }
 
-	/**
-	 * @param elevation the elevation to set
-	 */
-	public void setElevation(double elevation)
-	{
-		this.elevation = elevation;
-	}
+    /**
+     * @return the speed
+     */
+    public double getSpeed() {
+        return speed;
+    }
 
-	/**
-	 * @return the distance in meters
-	 */
-	public double getDistance()
-	{
-		return distance;
-	}
+    /**
+     * @param speed the speed to set
+     */
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
-	/**
-	 * @param distance the distance in meters
-	 */
-	public void setDistance(double distance)
-	{
-		this.distance = distance;
-	}
+    /**
+     * @param elevation the elevation to set
+     */
+    public void setElevation(double elevation) {
+        this.elevation = elevation;
+    }
 
-	/**
-	 * @param time the new time
-	 */
-	public void setTime(Date time)
-	{
-		this.time = time;
-	}
+    /**
+     * @return the distance in meters
+     */
+    public double getDistance() {
+        return distance;
+    }
+
+    /**
+     * @param distance the distance in meters
+     */
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    /**
+     * @param time the new time
+     */
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
 }
