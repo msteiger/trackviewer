@@ -86,10 +86,10 @@ public class TrackChart extends JComponent {
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
-        JToggleButton distanceButton = new JToggleButton(new ImageIcon("images/distance.png"));
-        JToggleButton heightButton = new JToggleButton(new ImageIcon("images/height.png"));
-        JToggleButton speedButton = new JToggleButton(new ImageIcon("images/speed.png"));
-        JToggleButton timeButton = new JToggleButton(new ImageIcon("images/time.png"));
+        JToggleButton distanceButton = new JToggleButton(new ImageIcon(TrackChart.class.getResource("/images/distance.png")));
+        JToggleButton heightButton = new JToggleButton(new ImageIcon(TrackChart.class.getResource("/images/height.png")));
+        JToggleButton speedButton = new JToggleButton(new ImageIcon(TrackChart.class.getResource("/images/speed.png")));
+        JToggleButton timeButton = new JToggleButton(new ImageIcon(TrackChart.class.getResource("/images/time.png")));
 
         ButtonGroup bgv = new ButtonGroup();
         bgv.add(distanceButton);
