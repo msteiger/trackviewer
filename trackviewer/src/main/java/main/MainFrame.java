@@ -57,11 +57,17 @@ public class MainFrame extends JFrame {
     /**
      * Constructs a new instance
      */
-    public MainFrame() {
+    public MainFrame(String tracksdir) {
         super("TrackViewer");
 
-        File folder = new File(System.getProperty("user.home") + File.separator
+        File folder;
+        
+        if(tracksdir == null) {
+            folder = new File(System.getProperty("user.home") + File.separator
                 + "trackviewer");
+        } else {
+            folder = new File(tracksdir);
+        }
 
         final List<Track> tracks = new CopyOnWriteArrayList<>();
 
@@ -302,7 +308,11 @@ public class MainFrame extends JFrame {
      * @param args the program args (ignored)
      */
     public static void main(String[] args) {
-        JFrame frame = new MainFrame();
+        String tracksdir = null;
+        if(args.length > 0) {
+            tracksdir = args[args.length - 1];
+        }
+        JFrame frame = new MainFrame(tracksdir);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1024, 768);
         frame.setVisible(true);
