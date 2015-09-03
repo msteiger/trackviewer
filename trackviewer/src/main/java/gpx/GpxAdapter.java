@@ -77,9 +77,14 @@ public class GpxAdapter {
                 track.setName(trk.getName() + " #" + trackCount);
 
                 for (WptType pt : seg.getTrkpt()) {
+                    double ele;
                     double lat = pt.getLat().doubleValue();
                     double lon = pt.getLon().doubleValue();
-                    double ele = pt.getEle().doubleValue();
+                    if(pt.getEle() != null) {
+                        ele = pt.getEle().doubleValue();
+                    } else {
+                        ele = Double.NaN;
+                    }
                     GregorianCalendar cal = pt.getTime().toGregorianCalendar();
                     GeoPosition pos = new GeoPosition(lat, lon);
 
