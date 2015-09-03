@@ -42,7 +42,7 @@
                 </executions>
             </plugin>
             <!-- generate a javadoc jar -->
-<!--            <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
@@ -54,7 +54,22 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.12.3</version>
+                <configuration>
+                    <schemaDirectory>src/main/jaxb</schemaDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -63,6 +78,11 @@
             <groupId>org.jxmapviewer</groupId>
             <artifactId>jxmapviewer2</artifactId>
             <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20141113</version>
         </dependency>
     </dependencies>
 
