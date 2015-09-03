@@ -15,8 +15,8 @@ import org.jxmapviewer.viewer.GeoPosition;
  */
 public class Track {
 
-    private final List<TrackPoint> points = new ArrayList<TrackPoint>();
-    private final List<Waypoint> waypoints = new ArrayList<Waypoint>();
+    private final List<TrackPoint> points = new ArrayList<>();
+    private final List<Waypoint> waypoints = new ArrayList<>();
 
     private List<GeoPosition> route = new AbstractList<GeoPosition>() {
         @Override

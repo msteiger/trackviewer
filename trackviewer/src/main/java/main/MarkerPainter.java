@@ -20,7 +20,7 @@ import org.jxmapviewer.painter.AbstractPainter;
 public class MarkerPainter extends AbstractPainter<JXMapViewer> {
 
     private List<GeoPosition> track;
-    private List<Integer> markers = new ArrayList<Integer>();
+    private List<Integer> markers = new ArrayList<>();
     private Color color;
 
     /**

@@ -50,7 +50,7 @@ public class ElevationFixer {
         int min = 0;
         int max = Math.min(routeFull.size(), min + chunkSize);
 
-        List<Double> ele = new ArrayList<Double>();
+        List<Double> ele = new ArrayList<>();
 
         while (min < max) {
             System.out.println("Converting [" + min + ".." + max + "]");
@@ -162,7 +162,7 @@ public class ElevationFixer {
 
         JSONArray arr = obj.getJSONArray("elevationProfile");
 
-        List<Double> data = new ArrayList<Double>();
+        List<Double> data = new ArrayList<>();
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj2 = (JSONObject) arr.get(i);

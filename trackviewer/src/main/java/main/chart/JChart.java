@@ -34,7 +34,7 @@ public class JChart extends JComponent {
     private String horzDesc;
     private String vertDesc;
 
-    private final List<List<Point2D>> series = new ArrayList<List<Point2D>>();
+    private final List<List<Point2D>> series = new ArrayList<>();
     private final Rectangle chartRect = new Rectangle();
 
     private int markerPos = -1;

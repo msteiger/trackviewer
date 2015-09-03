@@ -57,7 +57,7 @@ public class TcxAdapter {
      * @return the extracted track data
      */
     public List<Track> convertToTracks(TrainingCenterDatabaseT tcx) {
-        ArrayList<Track> list = new ArrayList<Track>();
+        ArrayList<Track> list = new ArrayList<>();
 
         for (ActivityT activity : tcx.getActivities().getActivity()) {
             for (ActivityLapT lap : activity.getLap()) {

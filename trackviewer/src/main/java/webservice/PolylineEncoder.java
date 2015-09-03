@@ -50,7 +50,7 @@ public class PolylineEncoder {
         double precision = Math.pow(10, -prec);
         int len = encoded.length(), index = 0, lat = 0, lng = 0;
 
-        List<GeoPosition> array = new ArrayList<GeoPosition>();
+        List<GeoPosition> array = new ArrayList<>();
         while (index < len) {
             int b, shift = 0, result = 0;
             do {

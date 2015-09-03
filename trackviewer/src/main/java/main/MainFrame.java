@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
         File folder = new File(System.getProperty("user.home") + File.separator
                 + "trackviewer");
 
-        final List<Track> tracks = new CopyOnWriteArrayList<Track>();
+        final List<Track> tracks = new CopyOnWriteArrayList<>();
 
         viewer = new MapViewer();
 
@@ -149,7 +149,7 @@ public class MainFrame extends JFrame {
         table.getColumn("altitude").setCellRenderer(altiRenderer);
 
         // Set row sorter
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
         table.setRowSorter(sorter);
         sorter.toggleSortOrder(0);		// sorts ascending
         sorter.toggleSortOrder(0);		// sorts descending
@@ -159,7 +159,7 @@ public class MainFrame extends JFrame {
         table.getSelectionModel().addListSelectionListener(new ListMultiSelectionListener() {
             @Override
             public void valueChanged(List<Integer> indices) {
-                List<Track> selTracks = new ArrayList<Track>();
+                List<Track> selTracks = new ArrayList<>();
 
                 for (Integer idx : indices) {
                     idx = table.convertRowIndexToModel(idx);

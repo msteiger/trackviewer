@@ -36,8 +36,8 @@ public class MapViewer extends JComponent {
 
     private JXMapViewer mapViewer = new JXMapViewer();
 
-    private List<RoutePainter> routePainters = new ArrayList<RoutePainter>();
-    private List<MarkerPainter> markerPainters = new ArrayList<MarkerPainter>();
+    private List<RoutePainter> routePainters = new ArrayList<>();
+    private List<MarkerPainter> markerPainters = new ArrayList<>();
 
     /**
      * Constructs a new instance
@@ -61,7 +61,7 @@ public class MapViewer extends JComponent {
         mapViewer.addMouseMotionListener(mia);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
 
-        painter = new CompoundPainter<JXMapViewer>();
+        painter = new CompoundPainter<>();
         mapViewer.setOverlayPainter(painter);
 
         GeoPosition frankfurt = new GeoPosition(50, 7, 0, 8, 41, 0);
@@ -87,7 +87,7 @@ public class MapViewer extends JComponent {
         markerPainters.clear();
         routePainters.clear();
 
-        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+        List<Painter<JXMapViewer>> painters = new ArrayList<>();
 
         int i = 0;
         for (Track track : tracks) {

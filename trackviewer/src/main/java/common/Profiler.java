@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Profiler {
 
-    private static final Map<Object, Long> map = new HashMap<Object, Long>();
+    private static final Map<Object, Long> map = new HashMap<>();
 
     /**
      * @param id an identifier object

@@ -45,7 +45,7 @@ public class TrackChart extends JComponent {
     private List<Track> tracks;
     private JChart chart;
 
-    private List<SelectionListener> selectionListeners = new CopyOnWriteArrayList<SelectionListener>();
+    private List<SelectionListener> selectionListeners = new CopyOnWriteArrayList<>();
 
     /**
      * Creates a new instance
@@ -157,7 +157,7 @@ public class TrackChart extends JComponent {
      * @param tracks the list of tracks to display
      */
     public void setTracks(List<Track> tracks) {
-        this.tracks = new ArrayList<Track>(tracks);
+        this.tracks = new ArrayList<>(tracks);
 
         reload();
     }
@@ -177,14 +177,14 @@ public class TrackChart extends JComponent {
     }
 
     private void reload() {
-        List<List<Point2D>> data = new ArrayList<List<Point2D>>();
+        List<List<Point2D>> data = new ArrayList<>();
 
         if (tracks.isEmpty()) {
             return;
         }
 
         for (Track track : tracks) {
-            List<Point2D> pts = new ArrayList<Point2D>();
+            List<Point2D> pts = new ArrayList<>();
 
             for (TrackPoint trackPt : track.getPoints()) {
                 pts.add(chartPointFromTrackPoint(trackPt));

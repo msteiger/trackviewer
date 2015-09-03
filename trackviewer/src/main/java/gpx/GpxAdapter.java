@@ -67,7 +67,7 @@ public class GpxAdapter {
             throw new IOException("Error parsing inputstream", e);
         }
 
-        ArrayList<Track> list = new ArrayList<Track>();
+        ArrayList<Track> list = new ArrayList<>();
 
         int trackCount = 1;
 

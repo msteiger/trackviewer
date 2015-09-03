@@ -134,7 +134,7 @@ public class Converter {
     }
 
     private static List<GeoPosition> extractRoute(TrainingCenterDatabaseT tcx) {
-        List<GeoPosition> route = new ArrayList<GeoPosition>();
+        List<GeoPosition> route = new ArrayList<>();
 
         for (ActivityT activity : tcx.getActivities().getActivity()) {
             for (ActivityLapT lap : activity.getLap()) {

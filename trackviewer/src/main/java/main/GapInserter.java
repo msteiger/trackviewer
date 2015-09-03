@@ -187,8 +187,8 @@ public class GapInserter {
     }
 
     private static List<Range<Integer>> findGaps(Track track1, Track track2, double sepVal) {
-        List<GeoPos> geoList1 = new ArrayList<GeoPos>();
-        List<GeoPos> geoList2 = new ArrayList<GeoPos>();
+        List<GeoPos> geoList1 = new ArrayList<>();
+        List<GeoPos> geoList2 = new ArrayList<>();
 
         for (GeoPosition pos : track1.getRoute()) {
             geoList1.add(new GeoPos(pos.getLatitude(), pos.getLongitude()));
@@ -202,7 +202,7 @@ public class GapInserter {
     }
 
     private static List<Range<Integer>> findGapsGeo(List<GeoPos> track1, List<GeoPos> track2, double sepVal) {
-        List<Range<Integer>> result = new ArrayList<Range<Integer>>();
+        List<Range<Integer>> result = new ArrayList<>();
 
         boolean inside = false;
 
@@ -224,7 +224,7 @@ public class GapInserter {
                 inside = false;
                 end = i;
 
-                result.add(new Range<Integer>(start, end));
+                result.add(new Range<>(start, end));
             }
         }
 

@@ -21,7 +21,7 @@ public abstract class ListMultiSelectionListener implements ListSelectionListene
             return;
         }
 
-        List<Integer> sel = new ArrayList<Integer>();
+        List<Integer> sel = new ArrayList<>();
 
         ListSelectionModel model = (ListSelectionModel) e.getSource();
 
