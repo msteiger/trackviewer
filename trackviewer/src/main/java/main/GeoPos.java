@@ -60,17 +60,17 @@ public class GeoPos {
         return Math.atan((Math.tan(geographicLatitude) * f));
     }
 
-//	/**
-//	 * Convert from geocentric to geographic latitude (radians)
-//	 * @param geocentricLatitude the geocentric Latitude
-//	 * @return the geographic latitude in radians
-//	 */
-//	private static double geographicLatitude(double geocentricLatitude)
-//	{
-//		double flattening = 1.0 / earthFlattening;
-//		double f = (1.0 - flattening) * (1.0 - flattening);
-//		return Math.atan(Math.tan(geocentricLatitude) / f);
-//	}
+//    /**
+//     * Convert from geocentric to geographic latitude (radians)
+//     * @param geocentricLatitude the geocentric Latitude
+//     * @return the geographic latitude in radians
+//     */
+//    private static double geographicLatitude(double geocentricLatitude)
+//    {
+//        double flattening = 1.0 / earthFlattening;
+//        double f = (1.0 - flattening) * (1.0 - flattening);
+//        return Math.atan(Math.tan(geocentricLatitude) / f);
+//    }
     /**
      * Returns the two antipodal points of intersection of two great circles
      * defined by the arcs geo1 to geo2 and geo3 to geo4. Returns a point as a
@@ -92,19 +92,19 @@ public class GeoPos {
         return rad * GeoUtils.WGS84_MEAN_RADIUS;
     }
 
-//	private static double metersToRadians(double m)
-//	{
-//		return m / earthRadius;
-//	}
-//	private double getLatitudeRadians()
-//	{
-//		return (bdccGeoGeographicLatitude(Math.atan2(this.z, Math.sqrt((this.x * this.x) + (this.y * this.y)))));
-//	}
+//    private static double metersToRadians(double m)
+//    {
+//        return m / earthRadius;
+//    }
+//    private double getLatitudeRadians()
+//    {
+//        return (bdccGeoGeographicLatitude(Math.atan2(this.z, Math.sqrt((this.x * this.x) + (this.y * this.y)))));
+//    }
 //
-//	private double getLongitudeRadians()
-//	{
-//		return (Math.atan2(this.y, this.x));
-//	}
+//    private double getLongitudeRadians()
+//    {
+//        return (Math.atan2(this.y, this.x));
+//    }
     private double dot(GeoPos b) {
         return ((this.x * b.x) + (this.y * b.y) + (this.z * b.z));
     }
@@ -163,7 +163,7 @@ public class GeoPos {
      * @return the distance in meters
      */
     private double distanceToLineSegMtrs(GeoPos geo1, GeoPos geo2) {
-		//point on unit sphere above origin and normal to plane of geo1,geo2
+        //point on unit sphere above origin and normal to plane of geo1,geo2
         //could be either side of the plane
         GeoPos p2 = geo1.crossNormalize(geo2);
 

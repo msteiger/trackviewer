@@ -116,7 +116,7 @@ public class MarkerPainter extends AbstractPainter<JXMapViewer> {
             distSq = dx * dx + dy * dy;
 
             if (lowBound == 0 && highBound == track.size() - 1) {
-                break;		// this is as good as it gets
+                break;        // this is as good as it gets
             }
         }
 

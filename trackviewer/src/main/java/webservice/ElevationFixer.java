@@ -168,7 +168,7 @@ public class ElevationFixer {
             JSONObject obj2 = (JSONObject) arr.get(i);
 
             double val = obj2.getDouble("height");
-            data.add(Double.valueOf(val));		// cache often-used values
+            data.add(Double.valueOf(val));        // cache often-used values
         }
 
         return data;

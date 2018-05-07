@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
         super("TrackViewer");
 
         File folder;
-        
+
         if(tracksdir == null) {
             folder = new File(System.getProperty("user.home") + File.separator
                 + "trackviewer");
@@ -105,11 +105,11 @@ public class MainFrame extends JFrame {
         statusBar = new StatusBar();
         add(statusBar, BorderLayout.SOUTH);
 
-        //Create the main split pane 
+        //Create the main split pane
         JSplitPane chartSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, viewer, trackChart);
         chartSplitPane.setDividerLocation(550);
 
-        //Create the main split pane 
+        //Create the main split pane
         JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tablePane, chartSplitPane);
         mainSplitPane.setDividerLocation(230);
 
@@ -121,7 +121,7 @@ public class MainFrame extends JFrame {
         add(createMenu(tracks), BorderLayout.NORTH);
         add(mainSplitPane);
 
-//		table.getSelectionModel().setSelectionInterval(0, 0);
+//        table.getSelectionModel().setSelectionInterval(0, 0);
     }
 
     private JTable createTable(final List<Track> tracks) {
@@ -129,7 +129,7 @@ public class MainFrame extends JFrame {
 
         final JTable table = new JShadedTable(model);
 
-		// Workaround to separate IDs from labels
+        // Workaround to separate IDs from labels
         // By default, ID is not set or used by JTable
         // but the columnModel uses it. If not available it uses
         // the ID that is defined by the TableModel
@@ -157,8 +157,8 @@ public class MainFrame extends JFrame {
         // Set row sorter
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
         table.setRowSorter(sorter);
-        sorter.toggleSortOrder(0);		// sorts ascending
-        sorter.toggleSortOrder(0);		// sorts descending
+        sorter.toggleSortOrder(0);        // sorts ascending
+        sorter.toggleSortOrder(0);        // sorts descending
 
         // Set selection model
         table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -248,7 +248,7 @@ public class MainFrame extends JFrame {
     }
 
     private void exportToFile(Track track) {
-//		JDialog ...		
+//        JDialog ...
         try {
             TrackLoader.saveAsGpx("E:\\fixed.gpx", track);
         } catch (IOException e) {

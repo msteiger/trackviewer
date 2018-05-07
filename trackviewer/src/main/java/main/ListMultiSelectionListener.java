@@ -25,9 +25,9 @@ public abstract class ListMultiSelectionListener implements ListSelectionListene
 
         ListSelectionModel model = (ListSelectionModel) e.getSource();
 
-	// The events values mirror only the current 
+        // The events values mirror only the current
         // change and not the full selection
-	// int iMin = e.getFirstIndex();
+        // int iMin = e.getFirstIndex();
         // int iMax = e.getLastIndex();
         int iMin = model.getMinSelectionIndex();
         int iMax = model.getMaxSelectionIndex();

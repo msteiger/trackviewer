@@ -95,7 +95,7 @@ public class JChart extends JComponent {
             return;
         }
 
-		// Draw selection marker line
+        // Draw selection marker line
         int overlap = 6;
         int yTop = (int) chartRect.getMinY() - overlap;
         int yBot = (int) chartRect.getMaxY() + overlap;
@@ -162,7 +162,7 @@ public class JChart extends JComponent {
 
             int tx = (int) (chartRect.getMinX() - size.getWidth() - pad_text);
             int asc = fm.getAscent();
-            int ty = (int) (pos + (asc * 0.5)) - 1;		// the -1 makes it look better
+            int ty = (int) (pos + (asc * 0.5)) - 1;        // the -1 makes it look better
 
             g.setColor(Color.BLACK);
             g.drawString(str, tx, ty);
@@ -273,7 +273,7 @@ public class JChart extends JComponent {
             return;
         }
 
-        series.addAll(data);		// does not copy the content
+        series.addAll(data);        // does not copy the content
 
         Rectangle2D bounds = null;
 
@@ -314,7 +314,7 @@ public class JChart extends JComponent {
     private Point2D roundRange(double val_min, double val_max) {
         double rnd_exp;
 
-        rnd_exp = Math.floor(Math.log10(val_max));			// transform to format #.##### * 10 ^ (rnd_exp)
+        rnd_exp = Math.floor(Math.log10(val_max));            // transform to format #.##### * 10 ^ (rnd_exp)
 
         double rnd_min = Math.floor(val_min / Math.pow(10.0, rnd_exp))
                 * Math.pow(10, rnd_exp);

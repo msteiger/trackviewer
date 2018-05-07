@@ -81,8 +81,8 @@ public class MapViewer extends JComponent {
      */
     public void showRoute(List<Track> tracks) {
         // Set the focus
-//		mapViewer.setZoom(10);
-//		mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
+//        mapViewer.setZoom(10);
+//        mapViewer.setAddressLocation(track.getPoints().iterator().next().getPos());
 
         markerPainters.clear();
         routePainters.clear();

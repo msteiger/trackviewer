@@ -48,15 +48,15 @@ public class GapInserter {
 
         insertGaps(track1, track2);
 
-//		[230..630] - 11094m
-//		Closest index in other track: 240 -- 530
-//		[970..986] - 710m
-//		Closest index in other track: 879 -- 898
-//		--------------------------------------------
-//		[243..527] - 7537m
-//		Closest index in other track: 227 -- 632
-//		[881..896] - 642m
-//		Closest index in other track: 968 -- 986
+//        [230..630] - 11094m
+//        Closest index in other track: 240 -- 530
+//        [970..986] - 710m
+//        Closest index in other track: 879 -- 898
+//        --------------------------------------------
+//        [243..527] - 7537m
+//        Closest index in other track: 227 -- 632
+//        [881..896] - 642m
+//        Closest index in other track: 968 -- 986
     }
 
     public static void insertGaps(Track track1, Track track2) {
@@ -65,7 +65,7 @@ public class GapInserter {
         List<Range<Integer>> gaps1 = findGaps(track1, track2, sepVal);
         List<Range<Integer>> gaps2 = findGaps(track2, track1, sepVal);
 
-	//	removeOverlaps(track1, track2, gaps1, gaps2);
+    //    removeOverlaps(track1, track2, gaps1, gaps2);
         System.out.println("--------------------------------------------");
 
         asdf(gaps1, track1, track2);
@@ -109,74 +109,74 @@ public class GapInserter {
 
     }
 //
-//	private static void removeOverlaps(Track track1, Track track2, List<Range<Integer>> gaps1, List<Range<Integer>> gaps2)
-//	{
-//		List<TrackPoint> pts1 = track1.getPoints();
-//		List<TrackPoint> pts2 = track2.getPoints();
+//    private static void removeOverlaps(Track track1, Track track2, List<Range<Integer>> gaps1, List<Range<Integer>> gaps2)
+//    {
+//        List<TrackPoint> pts1 = track1.getPoints();
+//        List<TrackPoint> pts2 = track2.getPoints();
 //
-//		for (Range<Integer> range1 : gaps1)
-//		{
-//			int otherStartIdx = findClosestPointIndex(pts1.get(range1.getStart()).getPos(), track2.getRoute());
-//	//		int otherEndIdx = findPointAtDistance(track2.getPoints(), track2.getPoints().get(otherStartIdx).getDistance() + gap); 
-//			int otherEndIdx = findClosestPointIndex(pts1.get(range1.getEnd()).getPos(), track2.getRoute()); 
+//        for (Range<Integer> range1 : gaps1)
+//        {
+//            int otherStartIdx = findClosestPointIndex(pts1.get(range1.getStart()).getPos(), track2.getRoute());
+//    //        int otherEndIdx = findPointAtDistance(track2.getPoints(), track2.getPoints().get(otherStartIdx).getDistance() + gap); 
+//            int otherEndIdx = findClosestPointIndex(pts1.get(range1.getEnd()).getPos(), track2.getRoute()); 
 //
-//			Range range1t = new Range<Integer>(otherStartIdx, otherEndIdx);
-//			
-//			reduceOverlap(pts2, range1t, gaps2);
-//		}
-//	}
+//            Range range1t = new Range<Integer>(otherStartIdx, otherEndIdx);
+//            
+//            reduceOverlap(pts2, range1t, gaps2);
+//        }
+//    }
 //
-//	private static double reduceOverlap(List<TrackPoint> points, Range<Integer> other, List<Range<Integer>> gaps)
-//	{
-//		double total = 0;
-//		int start = other.getStart();
-//		int end = other.getEnd();
-//		
-//		for (Range<Integer> range : gaps)
-//		{
-//			int rs = range.getStart();
-//			int re = range.getEnd();
+//    private static double reduceOverlap(List<TrackPoint> points, Range<Integer> other, List<Range<Integer>> gaps)
+//    {
+//        double total = 0;
+//        int start = other.getStart();
+//        int end = other.getEnd();
+//        
+//        for (Range<Integer> range : gaps)
+//        {
+//            int rs = range.getStart();
+//            int re = range.getEnd();
 //
-//			if ((rs > start && rs < end) &&		// range start is inside
-//				(re > start && re < end))		// range end is inside
-//			{
-//				double dist = points.get(re).getDistance() - points.get(rs).getDistance();
+//            if ((rs > start && rs < end) &&        // range start is inside
+//                (re > start && re < end))        // range end is inside
+//            {
+//                double dist = points.get(re).getDistance() - points.get(rs).getDistance();
 //
-//				System.out.println("Fully inside: " + rs +  "-" + re);
-//			}
-//			else
-//			if (rs > start && rs < end)		// range start is inside
-//			{
-//				double dist = points.get(end).getDistance() - points.get(rs).getDistance();
-//				total += dist;
-//				
-//				System.out.println("Start inside: " + rs +  "-" + re);
-//			}
-//			else
-//			if (re > start && re < end)		// range end is inside
-//			{
-//				double dist = points.get(start).getDistance() - points.get(rs).getDistance();
-//				total += dist;
-//				
-//				System.out.println("End inside: " + rs +  "-" + re);
-//			}		
-//		}
-//		
-//		return total;
-//	}
+//                System.out.println("Fully inside: " + rs +  "-" + re);
+//            }
+//            else
+//            if (rs > start && rs < end)        // range start is inside
+//            {
+//                double dist = points.get(end).getDistance() - points.get(rs).getDistance();
+//                total += dist;
+//                
+//                System.out.println("Start inside: " + rs +  "-" + re);
+//            }
+//            else
+//            if (re > start && re < end)        // range end is inside
+//            {
+//                double dist = points.get(start).getDistance() - points.get(rs).getDistance();
+//                total += dist;
+//                
+//                System.out.println("End inside: " + rs +  "-" + re);
+//            }        
+//        }
+//        
+//        return total;
+//    }
 //
-//	private static int findPointAtDistance(List<TrackPoint> points, double dist)
-//	{
-//		for (int i = 0; i < points.size(); i++)
-//		{
-//			TrackPoint pt = points.get(i);
-//			
-//			if (pt.getDistance() > dist)
-//				return i;
-//		}
-//		
-//		return -1;
-//	}
+//    private static int findPointAtDistance(List<TrackPoint> points, double dist)
+//    {
+//        for (int i = 0; i < points.size(); i++)
+//        {
+//            TrackPoint pt = points.get(i);
+//            
+//            if (pt.getDistance() > dist)
+//                return i;
+//        }
+//        
+//        return -1;
+//    }
 
     private static void insertGap(List<TrackPoint> points, int idx, double dist, long time) {
         for (int i = idx; i < points.size(); i++) {
@@ -214,7 +214,7 @@ public class GapInserter {
 
             double dist = GeoPos.distanceToPolyMtrs(track2, pos1);
 
-//			System.out.println(dist);
+//            System.out.println(dist);
             if (dist > sepVal) {
                 if (!inside) {
                     inside = true;
