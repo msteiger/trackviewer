@@ -16,3 +16,6 @@ doc-files/
 # eclipse settings folder
 .metadata/
 /trackviewer/target/
+.settings/
+.classpath
+.project
